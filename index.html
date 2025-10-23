@@ -869,15 +869,95 @@ ${currentPhoto.tags.join(' ')}
                         )}
                       </div>
                     </div>
+                  ) : activeSection === 'artifacts' ? (
+                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                      {/* Artifacts Header */}
+                      <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-800">Артефакты</h2>
+                          <p className="text-sm text-gray-500 mt-1">Создавайте уникальные артефакты из ваших воспоминаний</p>
+                        </div>
+                      </div>
+
+                      {/* Artifacts Content */}
+                      <div className="flex-1 overflow-y-auto p-6">
+                        <div className="grid grid-cols-2 gap-6 max-w-4xl">
+                          {/* Active Tile - Photo Greeting */}
+                          <a
+                            href="https://dburlaku.github.io/dasha-birthday/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-white rounded-xl overflow-hidden border-2 border-purple-200 hover:shadow-2xl hover:scale-105 transition-all cursor-pointer group"
+                          >
+                            <div className="aspect-video bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-7xl relative">
+                              <span className="group-hover:scale-110 transition-transform">🎉</span>
+                              <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow-lg">
+                                Активно
+                              </div>
+                            </div>
+                            <div className="p-6">
+                              <h3 className="font-bold text-xl text-gray-800 mb-2">Фотопоздравление</h3>
+                              <p className="text-sm text-gray-600">Создайте праздничное поздравление с фотографиями</p>
+                            </div>
+                          </a>
+
+                          {/* Inactive Tile - Bedtime Story */}
+                          <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                            <div className="aspect-video bg-gradient-to-br from-blue-300 to-indigo-300 flex items-center justify-center text-7xl">
+                              <span>📖</span>
+                            </div>
+                            <div className="p-6">
+                              <h3 className="font-bold text-xl text-gray-800 mb-2">Сказка на ночь</h3>
+                              <p className="text-sm text-gray-600">Создайте персонализированную сказку для вашего ребенка</p>
+                            </div>
+                            <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                              <div className="bg-gray-800 text-white px-4 py-2 rounded-lg font-medium">
+                                Скоро
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Inactive Tile - Family Tree */}
+                          <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                            <div className="aspect-video bg-gradient-to-br from-green-300 to-emerald-300 flex items-center justify-center text-7xl">
+                              <span>🌳</span>
+                            </div>
+                            <div className="p-6">
+                              <h3 className="font-bold text-xl text-gray-800 mb-2">Родословная</h3>
+                              <p className="text-sm text-gray-600">Постройте интерактивное древо вашей семьи</p>
+                            </div>
+                            <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                              <div className="bg-gray-800 text-white px-4 py-2 rounded-lg font-medium">
+                                Скоро
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Inactive Tile - Time River */}
+                          <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                            <div className="aspect-video bg-gradient-to-br from-cyan-300 to-blue-300 flex items-center justify-center text-7xl">
+                              <span>⏳</span>
+                            </div>
+                            <div className="p-6">
+                              <h3 className="font-bold text-xl text-gray-800 mb-2">Река времени</h3>
+                              <p className="text-sm text-gray-600">Визуализируйте вашу жизнь на временной линии</p>
+                            </div>
+                            <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                              <div className="bg-gray-800 text-white px-4 py-2 rounded-lg font-medium">
+                                Скоро
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   ) : (
                     <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
                       <div className="text-center space-y-4">
                         <div className="text-6xl">
-                          {activeSection === 'artifacts' && '🎨'}
                           {activeSection === 'stats' && '📊'}
                         </div>
                         <h2 className="text-2xl font-bold text-gray-800">
-                          {activeSection === 'artifacts' && 'Артефакты'}
                           {activeSection === 'stats' && 'Статистика'}
                         </h2>
                         <p className="text-gray-500">Раздел в разработке</p>
