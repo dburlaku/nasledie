@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nadi - Диалог с помощником памяти</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const NadiChatApp = () => {
+          const [step, setStep] = useState(0);
+          const [messages, setMessages] = useState([]);
+          const [isTyping, setIsTyping] = useState(false);
+          const [photos, setPhotos] = useState([]);
+          const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+          const [showResult, setShowResult] = useState(false);
+          const [activeSection, setActiveSection] = useState('chat');
+          const [savedToCapsula, setSavedToCapsula] = useState(false);
+          const [showProfile, setShowProfile] = useState(false);
+          const [showShareMenu, setShowShareMenu] = useState(false);
+          const [copied, setCopied] = useState(false);
+          const [generatedStory, setGeneratedStory] = useState('');
+          const [isGeneratingStory, setIsGeneratingStory] = useState(false);
+          const [userInput, setUserInput] = useState('');
+          const [isRecording, setIsRecording] = useState(false);
+          const [mediaView, setMediaView] = useState('all'); // all, people, events, dates, places
+          const [mediaFilter, setMediaFilter] = useState('all');
+          const messagesEndRef = useRef(null);
+
+          const scrollToBottom = () => {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+          };
+
+          useEffect(() => {
+            scrollToBottom();
+          }, [messages]);
+
+          const addMessage = (sender, text) => {
+            setMessages(prev => [...prev, { sender, text, id: Date.now() + Math.random() }]);
+          };
+
+          const addPhoto = (emoji, gradient) => {
+            const newPhoto = {
+              id: Date.now(),
+              emoji: emoji,
+              gradient: gradient,
+              location: '',
+              people: '',
+              event: '',
+              date: 'Август 2024',
+              tags: []
+            };
+            setPhotos(prev => [...prev, newPhoto]);
+            setCurrentPhotoIndex(photos.length);
+            return newPhoto;
+          };
+
+          const updateCurrentPhoto = (field, value) => {
+            setPhotos(prev => prev.map((photo, idx) => 
+              idx === currentPhotoIndex ? { ...photo, [field]: value } : photo
+            ));
+          };
+
+          const nextPhoto = () => {
+            if (currentPhotoIndex < photos.length - 1) {
+              setCurrentPhotoIndex(currentPhotoIndex + 1);
+            }
+          };
+
+          const prevPhoto = () => {
+            if (currentPhotoIndex > 0) {
+              setCurrentPhotoIndex(currentPhotoIndex - 1);
+            }
+          };
+
+          const handleShare = () => {
+            setShowShareMenu(!showShareMenu);
+          };
+
+          const handleCopy = () => {
+            const currentPhoto = photos[currentPhotoIndex];
+            const storyText = `
+📸 ${currentPhoto.location || 'Место не указано'}
+👥 ${currentPhoto.people || 'Люди не указаны'}
+🎉 ${currentPhoto.event || 'Событие не указано'}
+📅 ${currentPhoto.date}
+
+${currentPhoto.tags.join(' ')}
+            `.trim();
+            
+            navigator.clipboard.writeText(storyText).then(() => {
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000);
+            });
+          };
+
+          const generateStory = () => {
+            if (!currentPhoto) return;
+            
+            setIsGeneratingStory(true);
+            setTimeout(() => {
+              const stories = [
+                `Это было волшебное лето 2024 года. Мы с любимой отправились в ${currentPhoto.location || 'путешествие'}, чтобы отметить нашу ${currentPhoto.event || 'годовщину'}. Закат окрасил небо в невероятные оттенки розового и оранжевого, волны тихо шептали свои истории, а мы просто стояли рядом, наслаждаясь моментом. Это были те самые мгновения, когда понимаешь, что счастье — это не место назначения, а дорога, которую ты проходишь с любимым человеком.`,
+                
+                `${currentPhoto.location || 'Это место'} стало свидетелем нашей любви. ${currentPhoto.event} — день, который мы будем помнить всегда. Море, песок под ногами, и самый важный человек рядом. Мы не планировали ничего особенного, но иногда самые простые моменты становятся самыми ценными. Этот закат, эти эмоции — всё это останется с нами навсегда.`,
+                
+                `Когда мы планировали ${currentPhoto.event || 'эту поездку'}, я не представлял, что ${currentPhoto.location || 'это место'} так запомнится. ${currentPhoto.people || 'Мы'} гуляли вдоль берега, фотографировали закат, смеялись над глупостями. В такие моменты понимаешь, что память — это не просто фотографии, а чувства, которые ты испытывал в тот момент.`
+              ];
+              
+              setGeneratedStory(stories[Math.floor(Math.random() * stories.length)]);
+              setIsGeneratingStory(false);
+            }, 1500);
+          };
+
+          const handleNewChat = () => {
+            setStep(0);
+            setMessages([]);
+            setPhotos([]);
+            setCurrentPhotoIndex(0);
+            setShowResult(false);
+            setIsTyping(false);
+            setSavedToCapsula(false);
+            setGeneratedStory('');
+            setUserInput('');
+          };
+
+          const handleSendMessage = () => {
+            if (!userInput.trim()) return;
+            
+            addMessage('user', userInput);
+            setUserInput('');
+            
+            setTimeout(() => {
+              addMessage('nadi', 'Спасибо за дополнение! Я сохранил эту информацию в капсулу времени. Что ещё хочешь рассказать?');
+            }, 1000);
+          };
+
+          const handleKeyPress = (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSendMessage();
+            }
+          };
+
+          const handleVoiceRecord = () => {
+            if (!isRecording) {
+              setIsRecording(true);
+              setTimeout(() => {
+                setIsRecording(false);
+                setUserInput('Привет, это голосовое сообщение! Хочу добавить, что это был незабываемый день.');
+              }, 3000);
+            }
+          };
+
+          const currentPhoto = photos[currentPhotoIndex];
+
+          const handleNext = () => {
+            if (step === 0) {
+              addMessage('nadi', 'Привет! Я Nadi — твой помощник в сохранении воспоминаний 💫');
+              setTimeout(() => {
+                addMessage('nadi', 'У тебя наверняка тысячи фото в телефоне, но найти нужное — целое приключение, правда?');
+              }, 2000);
+              setTimeout(() => {
+                addMessage('nadi', 'Давай попробуем прямо сейчас — загрузи одно фото, которое тебе дорого, и я покажу, как это работает ✨');
+              }, 4000);
+              setStep(1);
+            } else if (step === 1) {
+              addPhoto('🌅🏖️', 'from-orange-300 via-pink-400 to-purple-400');
+              addMessage('system', '📸 Фото загружено');
+              setIsTyping(true);
+              setTimeout(() => {
+                setIsTyping(false);
+                setShowResult(true);
+                setTimeout(() => {
+                  addMessage('nadi', 'Какое тёплое фото! 🌊');
+                  setTimeout(() => {
+                    addMessage('nadi', 'Я вижу: море, закат, двое людей на пляже... Где это было?');
+                  }, 1500);
+                }, 500);
+              }, 2000);
+              setStep(2);
+            } else if (step === 2) {
+              addMessage('user', 'Это Крым, Коктебель');
+              updateCurrentPhoto('location', 'Крым, Коктебель');
+              setTimeout(() => {
+                addMessage('nadi', 'Крым — прекрасное место! 🏖️ А с кем ты был?');
+              }, 1500);
+              setStep(3);
+            } else if (step === 3) {
+              addMessage('user', 'С женой');
+              updateCurrentPhoto('people', 'С женой Дашей');
+              setTimeout(() => {
+                addMessage('nadi', 'Как здорово! А это было что-то особенное — юбилей, годовщина?');
+              }, 1500);
+              setStep(4);
+            } else if (step === 4) {
+              addMessage('user', 'Да, наша 10-я годовщина свадьбы');
+              updateCurrentPhoto('event', '10-я годовщина свадьбы');
+              updateCurrentPhoto('tags', ['#отпуск', '#море', '#семья', '#годовщина']);
+              setSavedToCapsula(true);
+              setTimeout(() => {
+                addMessage('nadi', 'Вот это да! 10 лет вместе — это невероятно! 💕');
+                setTimeout(() => {
+                  addMessage('nadi', 'Я сохранил всё:\n\n📍 Крым, Коктебель\n👫 С женой\n🎉 10-я годовщина свадьбы\n📅 Август 2024\n\nТеперь это фото — не просто картинка, а целая история!');
+                  setTimeout(() => {
+                    generateStory();
+                  }, 500);
+                }, 2000);
+                setTimeout(() => {
+                  addMessage('nadi', 'Представь: через 20 лет твои дети или внуки увидят это фото и прочитают настоящую историю — твоими словами, с твоими эмоциями ✨');
+                }, 5000);
+              }, 1500);
+              setStep(5);
+            } else if (step === 5) {
+              setTimeout(() => {
+                addMessage('nadi', 'У меня есть предложение! 🚀');
+                setTimeout(() => {
+                  addMessage('nadi', 'Я могу автоматически обрабатывать все твои новые фото:\n\n✅ Распознавать лица\n✅ Группировать события\n✅ Напоминать дополнить истории\n✅ Никогда ничего не забывать\n\nПодключить?');
+                }, 1500);
+              }, 2000);
+              setStep(6);
+            } else if (step === 6) {
+              addMessage('user', 'Да, подключи!');
+              setIsTyping(true);
+              setTimeout(() => {
+                setIsTyping(false);
+                addMessage('nadi', '🎉 Готово! Теперь:\n\n✓ Твои фото автоматически обрабатываются\n✓ Раз в неделю я буду напоминать о новых фото\n✓ Все воспоминания структурированы и сохранены\n✓ Поиск любого фото — за 3 секунды');
+              }, 2000);
+              setTimeout(() => {
+                addMessage('nadi', 'Твоя история под защитой. Ничего не потеряется. Ничего не забудется 💙');
+              }, 4500);
+              setTimeout(() => {
+                addMessage('nadi', 'Хочешь добавить ещё фото? Загрузи следующее!');
+              }, 6500);
+              setStep(7);
+            } else if (step === 7) {
+              addPhoto('🎂🎉', 'from-pink-300 via-purple-400 to-blue-400');
+              addMessage('system', '📸 Фото загружено');
+              setIsTyping(true);
+              setTimeout(() => {
+                setIsTyping(false);
+                addMessage('nadi', 'О! Вижу торт и праздник! Чей день рождения?');
+              }, 1500);
+              setStep(8);
+            } else if (step === 8) {
+              addMessage('user', 'Это день рождения дочери Арины');
+              updateCurrentPhoto('event', 'День рождения Арины');
+              updateCurrentPhoto('people', 'Арина');
+              updateCurrentPhoto('tags', ['#семья', '#праздник', '#деньрождения']);
+              setTimeout(() => {
+                addMessage('nadi', 'Замечательно! Сколько ей исполнилось?');
+              }, 1500);
+              setStep(9);
+            } else if (step === 9) {
+              addMessage('user', '4 годика');
+              updateCurrentPhoto('date', 'Сентябрь 2024');
+              setTimeout(() => {
+                addMessage('nadi', 'Какая милая! 🎈 История сохранена в капсулу. Теперь у тебя ' + photos.length + ' фото с полными историями!');
+              }, 1500);
+              setStep(10);
+            } else if (step === 10) {
+              // User can continue chatting
+              return;
+            }
+          };
+
+          const getButtonText = () => {
+            if (step === 0) return 'Начать диалог';
+            if (step === 1) return '📤 Загрузить фото';
+            if (step === 7) return '📤 Загрузить ещё фото';
+            return 'Продолжить →';
+          };
+
+          const totalSteps = 10;
+          const progress = Math.min(step, totalSteps);
+
+          const menuItems = [
+            { id: 'chat', icon: '💬', label: 'Чат с Nadi' },
+            { id: 'media', icon: '📸', label: 'Медиафайлы' },
+            { id: 'artifacts', icon: '🎨', label: 'Артефакты' },
+            { id: 'stats', icon: '📊', label: 'Статистика' },
+          ];
+
+          const chatHistory = [
+            { id: 1, title: 'Отпуск в Крыму 2024', date: '21 окт', preview: 'Море, закат...' },
+            { id: 2, title: 'День рождения дочери', date: '15 окт', preview: 'Арина 4 года...' },
+            { id: 3, title: 'Семейный архив', date: '10 окт', preview: 'Старые фото...' },
+          ];
+
+          // Mock data for media library
+          const mediaStats = {
+            total: 150,
+            people: 12,
+            events: 28,
+            places: 15,
+            recent: 23
+          };
+
+          const peopleAlbums = [
+            { id: 1, name: 'Арина', count: 45, emoji: '👧', lastUpdate: '2 дня назад' },
+            { id: 2, name: 'Жена (Даша)', count: 67, emoji: '👩', lastUpdate: '1 день назад' },
+            { id: 3, name: 'Я', count: 89, emoji: '👨', lastUpdate: 'Сегодня' },
+            { id: 4, name: 'Родители', count: 34, emoji: '👴👵', lastUpdate: '1 неделя назад' },
+            { id: 5, name: 'Друзья', count: 28, emoji: '👥', lastUpdate: '3 дня назад' },
+            { id: 6, name: 'Коллеги', count: 15, emoji: '💼', lastUpdate: '5 дней назад' },
+          ];
+
+          const eventAlbums = [
+            { id: 1, name: 'Дни рождения', count: 23, emoji: '🎂', lastUpdate: '2 дня назад' },
+            { id: 2, name: 'Отпуска', count: 38, emoji: '🏖️', lastUpdate: '1 неделя назад' },
+            { id: 3, name: 'Праздники', count: 31, emoji: '🎉', lastUpdate: '1 месяц назад' },
+            { id: 4, name: 'Свадьба', count: 12, emoji: '💍', lastUpdate: '10 лет назад' },
+            { id: 5, name: 'Выпускные', count: 8, emoji: '🎓', lastUpdate: '2 года назад' },
+            { id: 6, name: 'Спорт', count: 19, emoji: '⚽', lastUpdate: '1 неделя назад' },
+          ];
+
+          const placeAlbums = [
+            { id: 1, name: 'Крым', count: 42, emoji: '🏖️', lastUpdate: '2 месяца назад' },
+            { id: 2, name: 'Москва', count: 58, emoji: '🏙️', lastUpdate: 'Сегодня' },
+            { id: 3, name: 'Санкт-Петербург', count: 15, emoji: '🏛️', lastUpdate: '3 месяца назад' },
+            { id: 4, name: 'Сочи', count: 28, emoji: '🌊', lastUpdate: '1 год назад' },
+            { id: 5, name: 'Казань', count: 12, emoji: '🕌', lastUpdate: '6 месяцев назад' },
+          ];
+
+          const dateAlbums = [
+            { id: 1, name: '2024', count: 87, emoji: '📅', lastUpdate: 'Сегодня' },
+            { id: 2, name: '2023', count: 45, emoji: '📅', lastUpdate: '1 год назад' },
+            { id: 3, name: '2022', count: 12, emoji: '📅', lastUpdate: '2 года назад' },
+            { id: 4, name: '2021', count: 6, emoji: '📅', lastUpdate: '3 года назад' },
+          ];
+
+          const recentPhotos = [
+            { id: 1, emoji: '🌅🏖️', title: 'Крым 2024' },
+            { id: 2, emoji: '🎂🎉', title: 'ДР Арины' },
+            { id: 3, emoji: '🏙️✨', title: 'Москва вечером' },
+            { id: 4, emoji: '👨‍👩‍👧', title: 'Семейное фото' },
+            { id: 5, emoji: '🍽️🍷', title: 'Ресторан' },
+            { id: 6, emoji: '🌳🚶', title: 'Прогулка' },
+            { id: 7, emoji: '🎄❄️', title: 'Новый год' },
+            { id: 8, emoji: '⚽🏆', title: 'Футбол' },
+          ];
+
+          return (
+            <div className="flex h-screen bg-gray-50">
+              {/* Sidebar */}
+              <div className="w-72 bg-white border-r border-gray-200 flex flex-col">
+                <div className="p-6 border-b border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                      <span className="text-xl">✨</span>
+                    </div>
+                    <div>
+                      <h1 className="font-bold text-lg text-gray-800">Nadi</h1>
+                      <p className="text-xs text-gray-500">Помощник памяти</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto">
+                  <div className="p-4 space-y-1">
+                    {menuItems.map(item => (
+                      <button
+                        key={item.id}
+                        onClick={() => setActiveSection(item.id)}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                          activeSection === item.id
+                            ? 'bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 font-medium'
+                            : 'text-gray-600 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span className="text-xl">{item.icon}</span>
+                        <span>{item.label}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {activeSection === 'chat' && (
+                    <div className="px-4 py-2">
+                      <div className="flex items-center justify-between mb-2 px-4">
+                        <h3 className="text-xs font-semibold text-gray-500 uppercase">История чатов</h3>
+                        <button
+                          onClick={handleNewChat}
+                          className="text-xs text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
+                        >
+                          <span>+</span>
+                          <span>Новый чат</span>
+                        </button>
+                      </div>
+                      <div className="space-y-1">
+                        {chatHistory.map(chat => (
+                          <button
+                            key={chat.id}
+                            className="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-50 transition-all"
+                          >
+                            <div className="font-medium text-sm text-gray-800 truncate">{chat.title}</div>
+                            <div className="text-xs text-gray-500 flex items-center gap-2 mt-1">
+                              <span>{chat.date}</span>
+                              <span>•</span>
+                              <span className="truncate">{chat.preview}</span>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {savedToCapsula && (
+                    <div className="mx-4 my-4 p-4 bg-gradient-to-r from-green-50 to-teal-50 rounded-xl border border-green-200">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center pulse-animation">
+                          <span className="text-xl">💾</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-semibold text-green-800">Сохранено</div>
+                          <div className="text-xs text-green-600">{photos.length} фото</div>
+                        </div>
+                      </div>
+                      <button className="w-full bg-white border-2 border-green-300 text-green-700 rounded-lg py-2 px-4 text-sm font-medium hover:bg-green-50 transition-all flex items-center justify-center gap-2">
+                        <span>👥</span>
+                        <span>Пригласить</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className="border-t border-gray-200 p-4">
+                  <button
+                    onClick={() => setShowProfile(!showProfile)}
+                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-all"
+                  >
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold">
+                      АП
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="font-medium text-sm text-gray-800">Александр Петров</div>
+                      <div className="text-xs text-green-600 font-medium">Базовый • 500 фото</div>
+                    </div>
+                    <span className="text-gray-400">⚙️</span>
+                  </button>
+
+                  {showProfile && (
+                    <div className="mt-2 p-3 bg-gray-50 rounded-lg space-y-2 text-sm">
+                      <div className="px-3 py-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded border border-purple-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <div className="text-xs text-gray-600">Текущий тариф</div>
+                            <div className="font-semibold text-purple-800 text-base">Базовый</div>
+                          </div>
+                          <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-3 py-1.5 rounded-lg hover:shadow-lg transition-all font-medium">
+                            Улучшить
+                          </button>
+                        </div>
+                        <div className="flex items-center justify-between text-xs pt-2 border-t border-purple-200">
+                          <span className="text-gray-600">Лимит фото:</span>
+                          <span className="font-semibold text-gray-800">500 шт</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs mt-1">
+                          <span className="text-gray-600">Осталось:</span>
+                          <span className="font-semibold text-green-700">400 шт</span>
+                        </div>
+                        <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-green-500 to-teal-500 transition-all" style={{width: '80%'}}></div>
+                        </div>
+                      </div>
+                      <button className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all">👤 Профиль</button>
+                      <button className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all">⚙️ Настройки</button>
+                      <button className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all">📦 Моя капсула</button>
+                      <button className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all text-red-600">🚪 Выйти</button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+                {/* Main Content */}
+                <div className="flex-1 flex">
+                  {/* Chat Section */}
+                  <div className="flex-1 flex flex-col">
+                    {activeSection === 'chat' ? (
+                    <>
+                      <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <button className="hover:text-purple-600 transition-all">Главная</button>
+                          <span>›</span>
+                          <button className="hover:text-purple-600 transition-all">Чаты</button>
+                          <span>›</span>
+                          <span className="text-gray-800 font-medium">Разговор с Nadi</span>
+                        </div>
+                      </div>
+
+                      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                        {messages.length === 0 && step === 0 && (
+                          <div className="text-center py-20 space-y-6">
+                            <div className="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full mx-auto flex items-center justify-center animate-pulse">
+                              <span className="text-5xl">❤️</span>
+                            </div>
+                            <div>
+                              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                                Сохрани то, что важно
+                              </h2>
+                              <p className="text-gray-600 text-lg">
+                                Превращаем фотографии в живые истории
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {messages.map((msg) => (
+                          <div
+                            key={msg.id}
+                            className={`flex ${msg.sender === 'user' ? 'justify-end' : msg.sender === 'system' ? 'justify-center' : 'justify-start'}`}
+                            style={{animation: 'fadeIn 0.3s ease-in'}}
+                          >
+                            <div
+                              className={`${msg.sender === 'system' ? 'max-w-xs' : 'max-w-[75%]'} rounded-2xl px-5 py-3 ${
+                                msg.sender === 'user'
+                                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                                  : msg.sender === 'system'
+                                  ? 'bg-blue-100 text-blue-800 text-sm'
+                                  : 'bg-white text-gray-800 shadow-sm'
+                              }`}
+                            >
+                              <p className="whitespace-pre-wrap">{msg.text}</p>
+                            </div>
+                          </div>
+                        ))}
+
+                        {isTyping && (
+                          <div className="flex justify-start">
+                            <div className="bg-white rounded-2xl px-5 py-3 flex items-center gap-2 shadow-sm">
+                              <div className="flex gap-1">
+                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {showResult && currentPhotoIndex === 0 && (
+                          <div className="flex justify-start" style={{animation: 'fadeIn 0.5s ease-in'}}>
+                            <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl px-5 py-4 max-w-[85%]">
+                              <div className="flex items-center gap-2 mb-3">
+                                <span className="text-blue-500 text-xl">⚡</span>
+                                <span className="font-semibold text-blue-800">AI распознал:</span>
+                              </div>
+                              <div className="space-y-2 text-sm text-gray-700">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-green-500">✓</span>
+                                  <span>Сцена: пляж на закате</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-green-500">✓</span>
+                                  <span>Люди: 2 человека</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-green-500">✓</span>
+                                  <span>Эмоция: романтическая атмосфера</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        <div ref={messagesEndRef} />
+                      </div>
+
+                      <div className="bg-white border-t border-gray-200 p-6">
+                        {step >= 10 ? (
+                          <div className="space-y-3">
+                            <div className="flex gap-3">
+                              <input
+                                type="text"
+                                value={userInput}
+                                onChange={(e) => setUserInput(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                placeholder="Напишите сообщение..."
+                                className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                              />
+                              <button
+                                onClick={handleVoiceRecord}
+                                className={`p-3 rounded-xl transition-all ${
+                                  isRecording 
+                                    ? 'bg-red-500 text-white animate-pulse' 
+                                    : 'border border-gray-300 hover:bg-gray-50'
+                                }`}
+                                title={isRecording ? 'Запись...' : 'Голосовое сообщение'}
+                              >
+                                <span className="text-xl">{isRecording ? '⏺️' : '🎤'}</span>
+                              </button>
+                              <button
+                                onClick={handleSendMessage}
+                                disabled={!userInput.trim()}
+                                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl px-6 py-3 font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                Отправить
+                              </button>
+                            </div>
+                            {isRecording && (
+                              <div className="text-center text-sm text-red-600 flex items-center justify-center gap-2">
+                                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                                <span>Идёт запись голоса...</span>
+                              </div>
+                            )}
+                            <button
+                              onClick={handleNewChat}
+                              className="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-xl py-3 font-semibold hover:shadow-lg transition-all"
+                            >
+                              🔄 Начать заново
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex gap-3">
+                              <button
+                                onClick={handleNext}
+                                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl py-4 font-semibold hover:shadow-lg transition-all"
+                              >
+                                {getButtonText()}
+                              </button>
+                            </div>
+                            
+                            <div className="mt-4">
+                              <div className="flex justify-between text-xs text-gray-500 mb-2">
+                                <span>Шаг {progress} из {totalSteps}</span>
+                                <span>{Math.round((progress / totalSteps) * 100)}%</span>
+                              </div>
+                              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div 
+                                  className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500"
+                                  style={{ width: `${(progress / totalSteps) * 100}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  ) : activeSection === 'media' ? (
+                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                      {/* Media Header */}
+                      <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h2 className="text-2xl font-bold text-gray-800">Медиафайлы</h2>
+                            <p className="text-sm text-gray-500 mt-1">{mediaStats.total} фото • {mediaStats.people} человек • {mediaStats.events} событий</p>
+                          </div>
+                          <div className="flex gap-2">
+                            <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all font-medium flex items-center gap-2">
+                              <span>📤</span>
+                              <span>Загрузить</span>
+                            </button>
+                            <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all">
+                              <span className="text-xl">🔍</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Filter Tabs */}
+                        <div className="flex gap-2 mt-4 overflow-x-auto">
+                          <button
+                            onClick={() => setMediaView('all')}
+                            className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${
+                              mediaView === 'all' 
+                                ? 'bg-purple-100 text-purple-700' 
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            Все фото
+                          </button>
+                          <button
+                            onClick={() => setMediaView('people')}
+                            className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${
+                              mediaView === 'people' 
+                                ? 'bg-purple-100 text-purple-700' 
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            👥 Люди ({mediaStats.people})
+                          </button>
+                          <button
+                            onClick={() => setMediaView('events')}
+                            className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${
+                              mediaView === 'events' 
+                                ? 'bg-purple-100 text-purple-700' 
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            🎉 События ({mediaStats.events})
+                          </button>
+                          <button
+                            onClick={() => setMediaView('places')}
+                            className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${
+                              mediaView === 'places' 
+                                ? 'bg-purple-100 text-purple-700' 
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            📍 Места ({mediaStats.places})
+                          </button>
+                          <button
+                            onClick={() => setMediaView('dates')}
+                            className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${
+                              mediaView === 'dates' 
+                                ? 'bg-purple-100 text-purple-700' 
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            📅 По годам
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Media Content */}
+                      <div className="flex-1 overflow-y-auto p-6">
+                        {/* All Photos View */}
+                        {mediaView === 'all' && (
+                          <div className="space-y-6">
+                            <div>
+                              <h3 className="text-lg font-semibold text-gray-800 mb-4">Недавние фото</h3>
+                              <div className="grid grid-cols-4 gap-4">
+                                {recentPhotos.map(photo => (
+                                  <div key={photo.id} className="aspect-square bg-gradient-to-br from-purple-300 to-pink-300 rounded-xl flex items-center justify-center text-6xl cursor-pointer hover:scale-105 transition-all shadow-lg">
+                                    {photo.emoji}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div>
+                              <h3 className="text-lg font-semibold text-gray-800 mb-4">Быстрый доступ</h3>
+                              <div className="grid grid-cols-3 gap-4">
+                                <div className="bg-white rounded-xl p-4 border border-gray-200 hover:shadow-lg transition-all cursor-pointer">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl">
+                                      👧
+                                    </div>
+                                    <div>
+                                      <div className="font-semibold text-gray-800">Арина</div>
+                                      <div className="text-sm text-gray-500">45 фото</div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="bg-white rounded-xl p-4 border border-gray-200 hover:shadow-lg transition-all cursor-pointer">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-2xl">
+                                      🏖️
+                                    </div>
+                                    <div>
+                                      <div className="font-semibold text-gray-800">Отпуска</div>
+                                      <div className="text-sm text-gray-500">38 фото</div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="bg-white rounded-xl p-4 border border-gray-200 hover:shadow-lg transition-all cursor-pointer">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl">
+                                      📅
+                                    </div>
+                                    <div>
+                                      <div className="font-semibold text-gray-800">2024</div>
+                                      <div className="text-sm text-gray-500">87 фото</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* People View */}
+                        {mediaView === 'people' && (
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-800">Альбомы по людям</h3>
+                            <div className="grid grid-cols-3 gap-4">
+                              {peopleAlbums.map(album => (
+                                <div key={album.id} className="bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-lg transition-all cursor-pointer">
+                                  <div className="aspect-video bg-gradient-to-br from-blue-300 to-purple-300 flex items-center justify-center text-7xl">
+                                    {album.emoji}
+                                  </div>
+                                  <div className="p-4">
+                                    <div className="font-semibold text-gray-800">{album.name}</div>
+                                    <div className="text-sm text-gray-500 mt-1">{album.count} фото • {album.lastUpdate}</div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Events View */}
+                        {mediaView === 'events' && (
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-800">Альбомы по событиям</h3>
+                            <div className="grid grid-cols-3 gap-4">
+                              {eventAlbums.map(album => (
+                                <div key={album.id} className="bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-lg transition-all cursor-pointer">
+                                  <div className="aspect-video bg-gradient-to-br from-pink-300 to-orange-300 flex items-center justify-center text-7xl">
+                                    {album.emoji}
+                                  </div>
+                                  <div className="p-4">
+                                    <div className="font-semibold text-gray-800">{album.name}</div>
+                                    <div className="text-sm text-gray-500 mt-1">{album.count} фото • {album.lastUpdate}</div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Places View */}
+                        {mediaView === 'places' && (
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-800">Альбомы по местам</h3>
+                            <div className="grid grid-cols-3 gap-4">
+                              {placeAlbums.map(album => (
+                                <div key={album.id} className="bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-lg transition-all cursor-pointer">
+                                  <div className="aspect-video bg-gradient-to-br from-green-300 to-teal-300 flex items-center justify-center text-7xl">
+                                    {album.emoji}
+                                  </div>
+                                  <div className="p-4">
+                                    <div className="font-semibold text-gray-800">{album.name}</div>
+                                    <div className="text-sm text-gray-500 mt-1">{album.count} фото • {album.lastUpdate}</div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Dates View */}
+                        {mediaView === 'dates' && (
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-800">Альбомы по годам</h3>
+                            <div className="grid grid-cols-3 gap-4">
+                              {dateAlbums.map(album => (
+                                <div key={album.id} className="bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-lg transition-all cursor-pointer">
+                                  <div className="aspect-video bg-gradient-to-br from-purple-300 to-pink-300 flex items-center justify-center text-7xl">
+                                    {album.emoji}
+                                  </div>
+                                  <div className="p-4">
+                                    <div className="font-semibold text-gray-800">{album.name}</div>
+                                    <div className="text-sm text-gray-500 mt-1">{album.count} фото • {album.lastUpdate}</div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                      <div className="text-center space-y-4">
+                        <div className="text-6xl">
+                          {activeSection === 'artifacts' && '🎨'}
+                          {activeSection === 'stats' && '📊'}
+                        </div>
+                        <h2 className="text-2xl font-bold text-gray-800">
+                          {activeSection === 'artifacts' && 'Артефакты'}
+                          {activeSection === 'stats' && 'Статистика'}
+                        </h2>
+                        <p className="text-gray-500">Раздел в разработке</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Right Panel - Photo Card */}
+                {activeSection === 'chat' && photos.length > 0 && currentPhoto && (
+                  <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-800">Детали фото</h3>
+                          <div className="text-xs text-gray-500 mt-1">
+                            Фото {currentPhotoIndex + 1} из {photos.length}
+                          </div>
+                        </div>
+                        {currentPhoto.event && (
+                          <button
+                            onClick={handleShare}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-all"
+                            title="Поделиться"
+                          >
+                            <span className="text-lg">📤</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="p-6">
+                      <div className="relative">
+                        <div className="relative rounded-xl overflow-hidden shadow-lg">
+                          <div className={`bg-gradient-to-br ${currentPhoto.gradient} w-full aspect-[4/3] flex items-center justify-center text-8xl`}>
+                            {currentPhoto.emoji}
+                          </div>
+                          {currentPhoto.event && (
+                            <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow-lg flex items-center gap-1">
+                              <span>✓</span>
+                              <span>Сохранено</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {photos.length > 1 && (
+                          <>
+                            <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-2">
+                              <button
+                                onClick={prevPhoto}
+                                disabled={currentPhotoIndex === 0}
+                                className={`w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-lg flex items-center justify-center transition-all ${
+                                  currentPhotoIndex === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white hover:scale-110'
+                                }`}
+                              >
+                                <span className="text-xl">←</span>
+                              </button>
+                              <button
+                                onClick={nextPhoto}
+                                disabled={currentPhotoIndex === photos.length - 1}
+                                className={`w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-lg flex items-center justify-center transition-all ${
+                                  currentPhotoIndex === photos.length - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white hover:scale-110'
+                                }`}
+                              >
+                                <span className="text-xl">→</span>
+                              </button>
+                            </div>
+                            <div className="flex justify-center gap-2 mt-3">
+                              {photos.map((_, idx) => (
+                                <button
+                                  key={idx}
+                                  onClick={() => setCurrentPhotoIndex(idx)}
+                                  className={`h-2 rounded-full transition-all ${
+                                    idx === currentPhotoIndex 
+                                      ? 'w-8 bg-purple-500' 
+                                      : 'w-2 bg-gray-300 hover:bg-gray-400'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex-1 px-6 pb-6 space-y-4 overflow-y-auto">
+                      {currentPhoto.location && (
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-gray-500 text-sm">
+                            <span>📍</span>
+                            <span className="font-medium">Место</span>
+                          </div>
+                          <div className="bg-gray-50 rounded-lg px-4 py-3">
+                            <p className="text-gray-800 font-medium">{currentPhoto.location}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {currentPhoto.people && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-gray-500 text-sm">
+                              <span>👥</span>
+                              <span className="font-medium">Люди</span>
+                            </div>
+                            <button className="text-xs text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1">
+                              <span>+</span>
+                              <span>Добавить лицо</span>
+                            </button>
+                          </div>
+                          <div className="bg-gray-50 rounded-lg px-4 py-3">
+                            <p className="text-gray-800 font-medium">{currentPhoto.people}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {!currentPhoto.people && step >= 2 && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-gray-500 text-sm">
+                              <span>👥</span>
+                              <span className="font-medium">Люди</span>
+                            </div>
+                            <button className="text-xs text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1">
+                              <span>+</span>
+                              <span>Добавить лицо</span>
+                            </button>
+                          </div>
+                          <div className="bg-gray-50 rounded-lg px-4 py-3 text-center">
+                            <p className="text-gray-500 text-sm">Люди не распознаны</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {currentPhoto.event && (
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-gray-500 text-sm">
+                            <span>🎉</span>
+                            <span className="font-medium">Событие</span>
+                          </div>
+                          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg px-4 py-3 border border-purple-200">
+                            <p className="text-purple-800 font-semibold">{currentPhoto.event}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {showResult && currentPhotoIndex === 0 && (
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-gray-500 text-sm">
+                            <span>🤖</span>
+                            <span className="font-medium">AI распознал</span>
+                          </div>
+                          <div className="bg-blue-50 rounded-lg px-4 py-3 space-y-2 text-sm">
+                            <div className="flex items-center gap-2 text-gray-700">
+                              <span className="text-green-500 text-xs">✓</span>
+                              <span>Пляж на закате</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-700">
+                              <span className="text-green-500 text-xs">✓</span>
+                              <span>2 человека</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-700">
+                              <span className="text-green-500 text-xs">✓</span>
+                              <span>Романтическая атмосфера</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-gray-500 text-sm">
+                          <span>📅</span>
+                          <span className="font-medium">Дата</span>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg px-4 py-3">
+                          <p className="text-gray-800">{currentPhoto.date}</p>
+                        </div>
+                      </div>
+
+                      {currentPhoto.event && generatedStory && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-gray-500 text-sm">
+                              <span>📖</span>
+                              <span className="font-medium">История от AI</span>
+                            </div>
+                            <button
+                              onClick={generateStory}
+                              disabled={isGeneratingStory}
+                              className="text-xs text-purple-600 hover:text-purple-700 font-medium disabled:opacity-50 flex items-center gap-1"
+                            >
+                              {isGeneratingStory ? (
+                                <>
+                                  <span className="animate-spin">⟳</span>
+                                  <span>Генерация...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <span>🔄</span>
+                                  <span>Перегенерировать</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                          <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg px-4 py-4 border border-amber-200">
+                            {isGeneratingStory ? (
+                              <div className="flex items-center gap-2 text-sm text-gray-600">
+                                <span className="animate-pulse">✨</span>
+                                <span>Генерирую историю...</span>
+                              </div>
+                            ) : (
+                              <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                                {generatedStory}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {currentPhoto.event && (
+                      <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 space-y-3">
+                        <div className="text-xs text-gray-500 text-center">
+                          💾 Сохранено в капсулу времени
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handleCopy}
+                            className="flex-1 bg-white border border-gray-300 text-gray-700 text-sm py-2 px-4 rounded-lg hover:bg-gray-50 transition-all font-medium flex items-center justify-center gap-2"
+                          >
+                            <span>{copied ? '✓' : '📋'}</span>
+                            <span>{copied ? 'Скопировано' : 'Копировать'}</span>
+                          </button>
+                          <button
+                            onClick={handleShare}
+                            className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm py-2 px-4 rounded-lg hover:shadow-lg transition-all font-medium flex items-center justify-center gap-2"
+                          >
+                            <span>📤</span>
+                            <span>Поделиться</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        };
+
+        ReactDOM.render(<NadiChatApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
