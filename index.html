@@ -48,6 +48,15 @@
           const [mediaFilter, setMediaFilter] = useState('all');
           const messagesEndRef = useRef(null);
 
+          // Photo Greeting states
+          const [showPhotoGreeting, setShowPhotoGreeting] = useState(false);
+          const [greetingPhotos, setGreetingPhotos] = useState([]);
+          const [greetingTheme, setGreetingTheme] = useState('');
+          const [greetingStyle, setGreetingStyle] = useState('');
+          const [greetingDetails, setGreetingDetails] = useState('');
+          const [isGeneratingGreeting, setIsGeneratingGreeting] = useState(false);
+          const [generatedGreetingUrl, setGeneratedGreetingUrl] = useState('');
+
           const scrollToBottom = () => {
             messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
           };
@@ -171,6 +180,58 @@ ${currentPhoto.tags.join(' ')}
                 setUserInput('Привет, это голосовое сообщение! Хочу добавить, что это был незабываемый день.');
               }, 3000);
             }
+          };
+
+          // Photo Greeting functions
+          const handleOpenPhotoGreeting = () => {
+            setShowPhotoGreeting(true);
+            setActiveSection('photo-greeting');
+          };
+
+          const handleClosePhotoGreeting = () => {
+            setShowPhotoGreeting(false);
+            setActiveSection('artifacts');
+            setGreetingPhotos([]);
+            setGreetingTheme('');
+            setGreetingStyle('');
+            setGreetingDetails('');
+            setGeneratedGreetingUrl('');
+          };
+
+          const handleAddGreetingPhoto = () => {
+            if (greetingPhotos.length < 20) {
+              const newPhoto = {
+                id: Date.now(),
+                emoji: ['🎉', '🎂', '🎈', '🌅', '🏖️', '🎊', '💐', '🌸'][Math.floor(Math.random() * 8)],
+                gradient: [
+                  'from-purple-400 to-pink-400',
+                  'from-blue-400 to-cyan-400',
+                  'from-green-400 to-emerald-400',
+                  'from-orange-400 to-red-400',
+                  'from-yellow-400 to-orange-400'
+                ][Math.floor(Math.random() * 5)]
+              };
+              setGreetingPhotos([...greetingPhotos, newPhoto]);
+            }
+          };
+
+          const handleRemoveGreetingPhoto = (id) => {
+            setGreetingPhotos(greetingPhotos.filter(photo => photo.id !== id));
+          };
+
+          const handleGenerateGreeting = () => {
+            if (greetingPhotos.length === 0 || !greetingTheme || !greetingStyle) {
+              alert('Пожалуйста, добавьте хотя бы одно фото, выберите тему и стиль');
+              return;
+            }
+
+            setIsGeneratingGreeting(true);
+
+            // Simulate generation
+            setTimeout(() => {
+              setIsGeneratingGreeting(false);
+              setGeneratedGreetingUrl('https://dburlaku.github.io/dasha-birthday/');
+            }, 3000);
           };
 
           const currentPhoto = photos[currentPhotoIndex];
@@ -883,10 +944,8 @@ ${currentPhoto.tags.join(' ')}
                       <div className="flex-1 overflow-y-auto p-6">
                         <div className="grid grid-cols-2 gap-6 max-w-4xl">
                           {/* Active Tile - Photo Greeting */}
-                          <a
-                            href="https://dburlaku.github.io/dasha-birthday/"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <div
+                            onClick={handleOpenPhotoGreeting}
                             className="bg-white rounded-xl overflow-hidden border-2 border-purple-200 hover:shadow-2xl hover:scale-105 transition-all cursor-pointer group"
                           >
                             <div className="aspect-video bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-7xl relative">
@@ -899,7 +958,7 @@ ${currentPhoto.tags.join(' ')}
                               <h3 className="font-bold text-xl text-gray-800 mb-2">Фотопоздравление</h3>
                               <p className="text-sm text-gray-600">Создайте праздничное поздравление с фотографиями</p>
                             </div>
-                          </a>
+                          </div>
 
                           {/* Inactive Tile - Bedtime Story */}
                           <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
@@ -949,6 +1008,230 @@ ${currentPhoto.tags.join(' ')}
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  ) : activeSection === 'photo-greeting' ? (
+                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                      {/* Photo Greeting Header */}
+                      <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <button
+                              onClick={handleClosePhotoGreeting}
+                              className="text-purple-600 hover:text-purple-700 mb-2 flex items-center gap-2"
+                            >
+                              <span>←</span>
+                              <span>Назад к артефактам</span>
+                            </button>
+                            <h2 className="text-2xl font-bold text-gray-800">Создание фотопоздравления</h2>
+                            <p className="text-sm text-gray-500 mt-1">Загрузите фото, выберите тему и стиль для создания уникального поздравления</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Photo Greeting Content */}
+                      <div className="flex-1 overflow-y-auto p-6">
+                        {!generatedGreetingUrl ? (
+                          <div className="max-w-4xl mx-auto space-y-6">
+                            {/* Photos Section */}
+                            <div className="bg-white rounded-xl p-6 shadow-sm">
+                              <div className="flex items-center justify-between mb-4">
+                                <div>
+                                  <h3 className="text-lg font-semibold text-gray-800">Фотографии</h3>
+                                  <p className="text-sm text-gray-500">Добавьте до 20 фотографий ({greetingPhotos.length}/20)</p>
+                                </div>
+                                <button
+                                  onClick={handleAddGreetingPhoto}
+                                  disabled={greetingPhotos.length >= 20}
+                                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                >
+                                  <span>📤</span>
+                                  <span>Добавить фото</span>
+                                </button>
+                              </div>
+
+                              {greetingPhotos.length === 0 ? (
+                                <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center">
+                                  <div className="text-6xl mb-4">📸</div>
+                                  <p className="text-gray-600 mb-4">Добавьте хотя бы одну фотографию</p>
+                                  <button
+                                    onClick={handleAddGreetingPhoto}
+                                    className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-all"
+                                  >
+                                    Загрузить фото
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="grid grid-cols-5 gap-4">
+                                  {greetingPhotos.map((photo) => (
+                                    <div key={photo.id} className="relative group">
+                                      <div className={`aspect-square bg-gradient-to-br ${photo.gradient} rounded-xl flex items-center justify-center text-4xl shadow-lg`}>
+                                        {photo.emoji}
+                                      </div>
+                                      <button
+                                        onClick={() => handleRemoveGreetingPhoto(photo.id)}
+                                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-bold"
+                                      >
+                                        ×
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Theme Selection */}
+                            <div className="bg-white rounded-xl p-6 shadow-sm">
+                              <h3 className="text-lg font-semibold text-gray-800 mb-4">Тема поздравления</h3>
+                              <select
+                                value={greetingTheme}
+                                onChange={(e) => setGreetingTheme(e.target.value)}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all"
+                              >
+                                <option value="">Выберите тему...</option>
+                                <option value="birthday">День рождения 🎂</option>
+                                <option value="wedding">Свадьба 💍</option>
+                                <option value="anniversary">Годовщина 💕</option>
+                                <option value="graduation">Выпускной 🎓</option>
+                                <option value="newYear">Новый год 🎄</option>
+                                <option value="valentines">День Святого Валентина 💝</option>
+                                <option value="mothers">День матери 🌸</option>
+                                <option value="fathers">День отца 👔</option>
+                                <option value="baby">Рождение ребенка 👶</option>
+                                <option value="other">Другое 🎉</option>
+                              </select>
+                            </div>
+
+                            {/* Style Selection */}
+                            <div className="bg-white rounded-xl p-6 shadow-sm">
+                              <h3 className="text-lg font-semibold text-gray-800 mb-4">Стиль поздравления</h3>
+                              <div className="grid grid-cols-3 gap-4">
+                                {[
+                                  { value: 'festive', label: 'Торжественный', emoji: '🎩', color: 'purple' },
+                                  { value: 'fun', label: 'Веселый', emoji: '🎉', color: 'pink' },
+                                  { value: 'romantic', label: 'Романтичный', emoji: '💕', color: 'red' },
+                                  { value: 'warm', label: 'Теплый', emoji: '🌟', color: 'orange' },
+                                  { value: 'elegant', label: 'Элегантный', emoji: '✨', color: 'blue' },
+                                  { value: 'playful', label: 'Игривый', emoji: '🎈', color: 'green' }
+                                ].map((style) => (
+                                  <button
+                                    key={style.value}
+                                    onClick={() => setGreetingStyle(style.value)}
+                                    className={`p-4 rounded-xl border-2 transition-all ${
+                                      greetingStyle === style.value
+                                        ? `border-${style.color}-500 bg-${style.color}-50`
+                                        : 'border-gray-200 hover:border-gray-300'
+                                    }`}
+                                  >
+                                    <div className="text-3xl mb-2">{style.emoji}</div>
+                                    <div className="font-medium text-gray-800">{style.label}</div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Additional Details */}
+                            <div className="bg-white rounded-xl p-6 shadow-sm">
+                              <h3 className="text-lg font-semibold text-gray-800 mb-4">Дополнительные детали (опционально)</h3>
+                              <textarea
+                                value={greetingDetails}
+                                onChange={(e) => setGreetingDetails(e.target.value)}
+                                placeholder="Добавьте особые пожелания, имена, важные даты или другие детали, которые хотите включить в поздравление..."
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all resize-none"
+                                rows="5"
+                              ></textarea>
+                              <p className="text-xs text-gray-500 mt-2">Например: "Это для моей жены Даши, ей исполняется 30 лет. Мы вместе 10 лет."</p>
+                            </div>
+
+                            {/* Generate Button */}
+                            <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-6 border-2 border-purple-200">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h3 className="text-lg font-semibold text-gray-800 mb-1">Готовы создать поздравление?</h3>
+                                  <p className="text-sm text-gray-600">AI создаст уникальное поздравление на основе ваших фотографий и предпочтений</p>
+                                </div>
+                                <button
+                                  onClick={handleGenerateGreeting}
+                                  disabled={isGeneratingGreeting || greetingPhotos.length === 0 || !greetingTheme || !greetingStyle}
+                                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 whitespace-nowrap"
+                                >
+                                  {isGeneratingGreeting ? (
+                                    <>
+                                      <span className="animate-spin">⟳</span>
+                                      <span>Генерация...</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span>✨</span>
+                                      <span>Создать поздравление</span>
+                                    </>
+                                  )}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          /* Result View */
+                          <div className="max-w-3xl mx-auto space-y-6">
+                            <div className="bg-white rounded-xl p-8 shadow-lg text-center">
+                              <div className="text-6xl mb-6">🎉</div>
+                              <h3 className="text-3xl font-bold text-gray-800 mb-4">Ваше поздравление готово!</h3>
+                              <p className="text-gray-600 mb-8">AI создал уникальное поздравление на основе ваших фотографий и предпочтений</p>
+
+                              <div className="space-y-4">
+                                <a
+                                  href={generatedGreetingUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all"
+                                >
+                                  🎁 Открыть поздравление
+                                </a>
+
+                                <div className="flex gap-4 justify-center">
+                                  <button
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(generatedGreetingUrl);
+                                      alert('Ссылка скопирована!');
+                                    }}
+                                    className="px-6 py-3 border-2 border-purple-500 text-purple-700 rounded-lg font-medium hover:bg-purple-50 transition-all"
+                                  >
+                                    📋 Скопировать ссылку
+                                  </button>
+
+                                  <button
+                                    onClick={() => {
+                                      setGeneratedGreetingUrl('');
+                                      setGreetingPhotos([]);
+                                      setGreetingTheme('');
+                                      setGreetingStyle('');
+                                      setGreetingDetails('');
+                                    }}
+                                    className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-all"
+                                  >
+                                    🔄 Создать новое
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Loading Overlay */}
+                        {isGeneratingGreeting && (
+                          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+                            <div className="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+                              <div className="text-6xl mb-4 animate-pulse">✨</div>
+                              <h3 className="text-2xl font-bold text-gray-800 mb-2">Создаем ваше поздравление</h3>
+                              <p className="text-gray-600 mb-6">AI обрабатывает ваши фотографии и создает уникальный дизайн...</p>
+                              <div className="flex justify-center gap-2">
+                                <div className="w-3 h-3 bg-purple-500 rounded-full animate-bounce"></div>
+                                <div className="w-3 h-3 bg-pink-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                                <div className="w-3 h-3 bg-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ) : (
