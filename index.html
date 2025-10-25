@@ -35,7 +35,7 @@
           const [photos, setPhotos] = useState([]);
           const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
           const [showResult, setShowResult] = useState(false);
-          const [activeSection, setActiveSection] = useState('chat');
+          const [activeSection, setActiveSection] = useState('home');
           const [savedToCapsula, setSavedToCapsula] = useState(false);
           const [showProfile, setShowProfile] = useState(false);
           const [showShareMenu, setShowShareMenu] = useState(false);
@@ -439,6 +439,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
           const progress = Math.min(step, totalSteps);
 
           const menuItems = [
+            { id: 'home', icon: '🏠', label: 'Главная' },
             { id: 'chat', icon: '💬', label: 'Чат с Nadi' },
             { id: 'media', icon: '📸', label: 'Медиафайлы' },
             { id: 'artifacts', icon: '🎨', label: 'Артефакты' },
@@ -597,7 +598,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                     </div>
                     <div className="flex-1 text-left">
                       <div className="font-medium text-sm text-gray-800">Александр Петров</div>
-                      <div className="text-xs text-green-600 font-medium">Базовый • 500 фото</div>
+                      <div className="text-xs text-green-600 font-medium">Базовый • 5/20 ГБ</div>
                     </div>
                     <span className="text-gray-400">⚙️</span>
                   </button>
@@ -614,17 +615,35 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                             Улучшить
                           </button>
                         </div>
-                        <div className="flex items-center justify-between text-xs pt-2 border-t border-purple-200">
-                          <span className="text-gray-600">Лимит фото:</span>
-                          <span className="font-semibold text-gray-800">500 шт</span>
+
+                        {/* Storage Info */}
+                        <div className="pt-2 border-t border-purple-200 space-y-2">
+                          <div>
+                            <div className="flex items-center justify-between text-xs mb-1">
+                              <span className="text-gray-600">Хранилище:</span>
+                              <span className="font-semibold text-gray-800">5 / 20 ГБ</span>
+                            </div>
+                            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                              <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all" style={{width: '25%'}}></div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between text-xs pt-1">
+                            <span className="text-gray-600">Суточный лимит:</span>
+                            <span className="font-semibold text-gray-800">12 / 50</span>
+                          </div>
+
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-gray-600">Месячный лимит:</span>
+                            <span className="font-semibold text-green-700">127 / 500</span>
+                          </div>
                         </div>
-                        <div className="flex items-center justify-between text-xs mt-1">
-                          <span className="text-gray-600">Осталось:</span>
-                          <span className="font-semibold text-green-700">400 шт</span>
-                        </div>
-                        <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-green-500 to-teal-500 transition-all" style={{width: '80%'}}></div>
-                        </div>
+
+                        {/* Family Plan Invite */}
+                        <button className="w-full mt-3 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs px-3 py-2 rounded-lg hover:shadow-lg transition-all font-medium flex items-center justify-center gap-2">
+                          <span>👨‍👩‍👧‍👦</span>
+                          <span>Пригласить в семейный тариф</span>
+                        </button>
                       </div>
                       <button className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all">👤 Профиль</button>
                       <button className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all">⚙️ Настройки</button>
@@ -639,7 +658,187 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                 <div className="flex-1 flex">
                   {/* Chat Section */}
                   <div className="flex-1 flex flex-col">
-                    {activeSection === 'chat' ? (
+                    {activeSection === 'home' ? (
+                    <>
+                      <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-800">Добро пожаловать в Nadi</h2>
+                          <p className="text-sm text-gray-500 mt-1">Помощник памяти — сохраните ваши воспоминания навсегда</p>
+                        </div>
+                      </div>
+
+                      <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                        <div className="max-w-6xl mx-auto space-y-8">
+                          {/* Hero Section */}
+                          <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-8 text-white shadow-xl">
+                            <h1 className="text-3xl font-bold mb-3">Сохраните историю вашей семьи</h1>
+                            <p className="text-lg opacity-90 mb-6">Nadi поможет вам создать вечную память о самых важных моментах жизни</p>
+                            <button
+                              onClick={() => setActiveSection('chat')}
+                              className="bg-white text-purple-600 px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
+                            >
+                              Начать диалог с Nadi
+                            </button>
+                          </div>
+
+                          {/* Services Grid */}
+                          <div>
+                            <h3 className="text-2xl font-bold text-gray-800 mb-6">Наши сервисы</h3>
+
+                            {/* Категория: Основные сервисы */}
+                            <div className="mb-8">
+                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                                <span className="text-2xl">✨</span>
+                                <span>Основные сервисы</span>
+                              </h4>
+                              <div className="grid grid-cols-3 gap-4">
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🎙️</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Запиши историю родственника</h5>
+                                  <p className="text-sm text-gray-600">Guided-интервью с бабушкой/дедушкой через Nadi. AI структурирует рассказ в биографию</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🌳</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Семейное древо</h5>
+                                  <p className="text-sm text-gray-600">Интерактивное создание генеалогии с привязкой фото и историй к персонам</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">💌</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Письмо в будущее</h5>
+                                  <p className="text-sm text-gray-600">Создание послания себе/детям/внукам на 5/10/20 лет вперед</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">📝</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Воспоминание дня</h5>
+                                  <p className="text-sm text-gray-600">Ежедневный микро-диалог с Nadi: "Что важного произошло сегодня?"</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Категория: Обработка контента */}
+                            <div className="mb-8">
+                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                                <span className="text-2xl">🔧</span>
+                                <span>Обработка контента</span>
+                              </h4>
+                              <div className="grid grid-cols-3 gap-4">
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">📄</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Оцифровка семейного архива</h5>
+                                  <p className="text-sm text-gray-600">Фото, документы, письма с OCR-распознаванием рукописного текста</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🖼️</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Восстановление старых фото</h5>
+                                  <p className="text-sm text-gray-600">AI-реставрация поврежденных фото и колоризация черно-белых снимков</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🎬</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Видео-капсула</h5>
+                                  <p className="text-sm text-gray-600">Запись видео-обращения к потомкам с автоматическими субтитрами</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Категория: Эмоциональные сервисы */}
+                            <div className="mb-8">
+                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                                <span className="text-2xl">❤️</span>
+                                <span>Эмоциональные сервисы</span>
+                              </h4>
+                              <div className="grid grid-cols-3 gap-4">
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🗺️</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Карта жизни</h5>
+                                  <p className="text-sm text-gray-600">Интерактивная карта всех мест с привязкой фото и историй</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">📜</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Наследие ценностей</h5>
+                                  <p className="text-sm text-gray-600">Запись жизненных принципов и формирование "семейного кодекса"</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🕊️</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Незаконченная история</h5>
+                                  <p className="text-sm text-gray-600">Помощь в сборе истории ушедшего близкого человека из воспоминаний других</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Категория: Практические сервисы */}
+                            <div className="mb-8">
+                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                                <span className="text-2xl">🛠️</span>
+                                <span>Практические сервисы</span>
+                              </h4>
+                              <div className="grid grid-cols-3 gap-4">
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🏥</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Медицинская история семьи</h5>
+                                  <p className="text-sm text-gray-600">Структурированный сбор информации о наследственных заболеваниях</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🍳</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Рецепты семьи</h5>
+                                  <p className="text-sm text-gray-600">Фото блюд + рецепты + истории. Кулинарное наследие поколений</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🎊</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Семейные традиции</h5>
+                                  <p className="text-sm text-gray-600">Документирование ритуалов и передача культурного кода</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Категория: Социальные сервисы */}
+                            <div className="mb-8">
+                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                                <span className="text-2xl">👥</span>
+                                <span>Социальные сервисы</span>
+                              </h4>
+                              <div className="grid grid-cols-3 gap-4">
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">📔</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Общий альбом</h5>
+                                  <p className="text-sm text-gray-600">Совместное создание семейной капсулы с множественными точками зрения</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🔍</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Найди потерянные связи</h5>
+                                  <p className="text-sm text-gray-600">AI ищет фото с одинаковыми людьми/местами и восстанавливает контекст</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Категория: Креативные сервисы */}
+                            <div className="mb-8">
+                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                                <span className="text-2xl">🎨</span>
+                                <span>Креативные сервисы</span>
+                              </h4>
+                              <div className="grid grid-cols-3 gap-4">
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">📖</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Фотокнига за 5 минут</h5>
+                                  <p className="text-sm text-gray-600">Автоматическая компоновка лучших фото с AI-дизайном и версткой</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🎞️</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Анимированные воспоминания</h5>
+                                  <p className="text-sm text-gray-600">Превращение серии фото в видео с эффектами и музыкой</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
+                                  <div className="text-4xl mb-3">🎙️</div>
+                                  <h5 className="font-bold text-gray-800 mb-2">Голосовое наследие</h5>
+                                  <p className="text-sm text-gray-600">Запись важных фраз голосом близкого человека для будущих поколений</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : activeSection === 'chat' ? (
                     <>
                       <div className="bg-white border-b border-gray-200 px-6 py-4">
                         <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -700,30 +899,6 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           </div>
                         )}
 
-                        {showResult && currentPhotoIndex === 0 && (
-                          <div className="flex justify-start" style={{animation: 'fadeIn 0.5s ease-in'}}>
-                            <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl px-5 py-4 max-w-[85%]">
-                              <div className="flex items-center gap-2 mb-3">
-                                <span className="text-blue-500 text-xl">⚡</span>
-                                <span className="font-semibold text-blue-800">AI распознал:</span>
-                              </div>
-                              <div className="space-y-2 text-sm text-gray-700">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-green-500">✓</span>
-                                  <span>Сцена: пляж на закате</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-green-500">✓</span>
-                                  <span>Люди: 2 человека</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-green-500">✓</span>
-                                  <span>Эмоция: романтическая атмосфера</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
 
                         <div ref={messagesEndRef} />
                       </div>
@@ -1024,68 +1199,298 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
 
                       {/* Artifacts Content */}
                       <div className="flex-1 overflow-y-auto p-6">
-                        <div className="grid grid-cols-2 gap-6 max-w-4xl">
-                          {/* Active Tile - Photo Greeting */}
-                          <div
-                            onClick={handleOpenPhotoGreeting}
-                            className="bg-white rounded-xl overflow-hidden border-2 border-purple-200 hover:shadow-2xl hover:scale-105 transition-all cursor-pointer group"
-                          >
-                            <div className="aspect-video bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-7xl relative">
-                              <span className="group-hover:scale-110 transition-transform">🎉</span>
-                              <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow-lg">
-                                Активно
-                              </div>
-                            </div>
-                            <div className="p-6">
-                              <h3 className="font-bold text-xl text-gray-800 mb-2">Фотопоздравление</h3>
-                              <p className="text-sm text-gray-600">Создайте праздничное поздравление с фотографиями</p>
-                            </div>
-                          </div>
-
-                          {/* Inactive Tile - Bedtime Story */}
-                          <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
-                            <div className="aspect-video bg-gradient-to-br from-blue-300 to-indigo-300 flex items-center justify-center text-7xl">
-                              <span>📖</span>
-                            </div>
-                            <div className="p-6">
-                              <h3 className="font-bold text-xl text-gray-800 mb-2">Сказка на ночь</h3>
-                              <p className="text-sm text-gray-600">Создайте персонализированную сказку для вашего ребенка</p>
-                            </div>
-                            <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
-                              <div className="bg-gray-800 text-white px-4 py-2 rounded-lg font-medium">
-                                Скоро
+                        <div className="max-w-6xl mx-auto space-y-8">
+                          {/* Active Artifact */}
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                              <span className="text-2xl">✅</span>
+                              <span>Доступно сейчас</span>
+                            </h3>
+                            <div className="grid grid-cols-3 gap-4">
+                              <div
+                                onClick={handleOpenPhotoGreeting}
+                                className="bg-white rounded-xl overflow-hidden border-2 border-purple-200 hover:shadow-2xl hover:scale-105 transition-all cursor-pointer group"
+                              >
+                                <div className="aspect-video bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-7xl relative">
+                                  <span className="group-hover:scale-110 transition-transform">🎉</span>
+                                  <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow-lg">
+                                    Активно
+                                  </div>
+                                </div>
+                                <div className="p-6">
+                                  <h3 className="font-bold text-lg text-gray-800 mb-2">Фотопоздравление</h3>
+                                  <p className="text-sm text-gray-600">Создайте праздничное поздравление с фотографиями</p>
+                                </div>
                               </div>
                             </div>
                           </div>
 
-                          {/* Inactive Tile - Family Tree */}
-                          <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
-                            <div className="aspect-video bg-gradient-to-br from-green-300 to-emerald-300 flex items-center justify-center text-7xl">
-                              <span>🌳</span>
-                            </div>
-                            <div className="p-6">
-                              <h3 className="font-bold text-xl text-gray-800 mb-2">Родословная</h3>
-                              <p className="text-sm text-gray-600">Постройте интерактивное древо вашей семьи</p>
-                            </div>
-                            <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
-                              <div className="bg-gray-800 text-white px-4 py-2 rounded-lg font-medium">
-                                Скоро
+                          {/* Coming Soon - Core Services */}
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                              <span className="text-2xl">✨</span>
+                              <span>Основные сервисы (скоро)</span>
+                            </h3>
+                            <div className="grid grid-cols-3 gap-4">
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-blue-300 to-indigo-300 flex items-center justify-center text-6xl">
+                                  <span>🎙️</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Запиши историю родственника</h4>
+                                  <p className="text-xs text-gray-600">Guided-интервью с AI структурированием</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-green-300 to-emerald-300 flex items-center justify-center text-6xl">
+                                  <span>🌳</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Семейное древо</h4>
+                                  <p className="text-xs text-gray-600">Интерактивное создание генеалогии</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-purple-300 to-pink-300 flex items-center justify-center text-6xl">
+                                  <span>💌</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Письмо в будущее</h4>
+                                  <p className="text-xs text-gray-600">Капсула времени с таймером открытия</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-yellow-300 to-orange-300 flex items-center justify-center text-6xl">
+                                  <span>📝</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Воспоминание дня</h4>
+                                  <p className="text-xs text-gray-600">Ежедневный микро-диалог с Nadi</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
                               </div>
                             </div>
                           </div>
 
-                          {/* Inactive Tile - Time River */}
-                          <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
-                            <div className="aspect-video bg-gradient-to-br from-cyan-300 to-blue-300 flex items-center justify-center text-7xl">
-                              <span>⏳</span>
+                          {/* Content Processing */}
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                              <span className="text-2xl">🔧</span>
+                              <span>Обработка контента (скоро)</span>
+                            </h3>
+                            <div className="grid grid-cols-3 gap-4">
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-gray-300 to-slate-300 flex items-center justify-center text-6xl">
+                                  <span>📄</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Оцифровка архива</h4>
+                                  <p className="text-xs text-gray-600">OCR документов и писем</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-amber-300 to-orange-300 flex items-center justify-center text-6xl">
+                                  <span>🖼️</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Восстановление фото</h4>
+                                  <p className="text-xs text-gray-600">AI-реставрация и колоризация</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-red-300 to-pink-300 flex items-center justify-center text-6xl">
+                                  <span>🎬</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Видео-капсула</h4>
+                                  <p className="text-xs text-gray-600">Видео-обращение к потомкам</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
                             </div>
-                            <div className="p-6">
-                              <h3 className="font-bold text-xl text-gray-800 mb-2">Река времени</h3>
-                              <p className="text-sm text-gray-600">Визуализируйте вашу жизнь на временной линии</p>
+                          </div>
+
+                          {/* Emotional Services */}
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                              <span className="text-2xl">❤️</span>
+                              <span>Эмоциональные сервисы (скоро)</span>
+                            </h3>
+                            <div className="grid grid-cols-3 gap-4">
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-teal-300 to-cyan-300 flex items-center justify-center text-6xl">
+                                  <span>🗺️</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Карта жизни</h4>
+                                  <p className="text-xs text-gray-600">Интерактивная карта с геолокациями</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-indigo-300 to-purple-300 flex items-center justify-center text-6xl">
+                                  <span>📜</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Наследие ценностей</h4>
+                                  <p className="text-xs text-gray-600">Семейный кодекс и принципы</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-gray-300 to-blue-300 flex items-center justify-center text-6xl">
+                                  <span>🕊️</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Незаконченная история</h4>
+                                  <p className="text-xs text-gray-600">Сбор истории из воспоминаний</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
                             </div>
-                            <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
-                              <div className="bg-gray-800 text-white px-4 py-2 rounded-lg font-medium">
-                                Скоро
+                          </div>
+
+                          {/* Practical & Social & Creative */}
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                              <span className="text-2xl">🎨</span>
+                              <span>Другие сервисы (скоро)</span>
+                            </h3>
+                            <div className="grid grid-cols-3 gap-4">
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-red-300 to-pink-300 flex items-center justify-center text-6xl">
+                                  <span>🏥</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Медицинская история</h4>
+                                  <p className="text-xs text-gray-600">Наследственные заболевания</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-orange-300 to-yellow-300 flex items-center justify-center text-6xl">
+                                  <span>🍳</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Рецепты семьи</h4>
+                                  <p className="text-xs text-gray-600">Кулинарное наследие</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-pink-300 to-purple-300 flex items-center justify-center text-6xl">
+                                  <span>🎊</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Семейные традиции</h4>
+                                  <p className="text-xs text-gray-600">Документирование ритуалов</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-blue-300 to-indigo-300 flex items-center justify-center text-6xl">
+                                  <span>📔</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Общий альбом</h4>
+                                  <p className="text-xs text-gray-600">Совместная капсула памяти</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-green-300 to-teal-300 flex items-center justify-center text-6xl">
+                                  <span>🔍</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Найди связи</h4>
+                                  <p className="text-xs text-gray-600">AI поиск по фото</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-purple-300 to-pink-300 flex items-center justify-center text-6xl">
+                                  <span>📖</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Фотокнига за 5 минут</h4>
+                                  <p className="text-xs text-gray-600">AI-дизайн и верстка</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-yellow-300 to-orange-300 flex items-center justify-center text-6xl">
+                                  <span>🎞️</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Анимированные воспоминания</h4>
+                                  <p className="text-xs text-gray-600">Фото в видео с музыкой</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
+                                <div className="aspect-video bg-gradient-to-br from-blue-300 to-cyan-300 flex items-center justify-center text-6xl">
+                                  <span>🎙️</span>
+                                </div>
+                                <div className="p-4">
+                                  <h4 className="font-bold text-base text-gray-800 mb-1">Голосовое наследие</h4>
+                                  <p className="text-xs text-gray-600">Аудио-капсулы для потомков</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100/50 backdrop-blur-[1px] flex items-center justify-center">
+                                  <div className="bg-gray-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium">Скоро</div>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -1373,16 +1778,218 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                         )}
                       </div>
                     </div>
+                  ) : activeSection === 'stats' ? (
+                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                      {/* Stats Header */}
+                      <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-800">Статистика</h2>
+                          <p className="text-sm text-gray-500 mt-1">Обзор ваших воспоминаний и активности</p>
+                        </div>
+                      </div>
+
+                      {/* Stats Content */}
+                      <div className="flex-1 overflow-y-auto p-6">
+                        <div className="max-w-6xl mx-auto space-y-6">
+                          {/* Key Metrics */}
+                          <div className="grid grid-cols-4 gap-4">
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                              <div className="flex items-center justify-between mb-3">
+                                <span className="text-3xl">📸</span>
+                                <span className="text-xs text-gray-500">Всего</span>
+                              </div>
+                              <div className="text-3xl font-bold text-gray-800 mb-1">150</div>
+                              <div className="text-sm text-gray-600">Фотографий</div>
+                              <div className="mt-3 text-xs text-green-600 flex items-center gap-1">
+                                <span>↑</span>
+                                <span>+23 за месяц</span>
+                              </div>
+                            </div>
+
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                              <div className="flex items-center justify-between mb-3">
+                                <span className="text-3xl">💾</span>
+                                <span className="text-xs text-gray-500">Использовано</span>
+                              </div>
+                              <div className="text-3xl font-bold text-gray-800 mb-1">5 ГБ</div>
+                              <div className="text-sm text-gray-600">из 20 ГБ</div>
+                              <div className="mt-3 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500" style={{width: '25%'}}></div>
+                              </div>
+                            </div>
+
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                              <div className="flex items-center justify-between mb-3">
+                                <span className="text-3xl">👥</span>
+                                <span className="text-xs text-gray-500">Распознано</span>
+                              </div>
+                              <div className="text-3xl font-bold text-gray-800 mb-1">12</div>
+                              <div className="text-sm text-gray-600">Людей</div>
+                              <div className="mt-3 text-xs text-blue-600 flex items-center gap-1">
+                                <span>+</span>
+                                <span>3 новых лица</span>
+                              </div>
+                            </div>
+
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                              <div className="flex items-center justify-between mb-3">
+                                <span className="text-3xl">🎉</span>
+                                <span className="text-xs text-gray-500">Сохранено</span>
+                              </div>
+                              <div className="text-3xl font-bold text-gray-800 mb-1">28</div>
+                              <div className="text-sm text-gray-600">Событий</div>
+                              <div className="mt-3 text-xs text-purple-600 flex items-center gap-1">
+                                <span>✓</span>
+                                <span>5 за неделю</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Usage Limits */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Лимиты использования</h3>
+                            <div className="space-y-4">
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm text-gray-700">Суточный лимит</span>
+                                  <span className="text-sm font-semibold text-gray-800">12 / 50</span>
+                                </div>
+                                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                  <div className="h-full bg-gradient-to-r from-green-500 to-teal-500" style={{width: '24%'}}></div>
+                                </div>
+                                <div className="text-xs text-gray-500 mt-1">Осталось 38 загрузок сегодня</div>
+                              </div>
+
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm text-gray-700">Месячный лимит</span>
+                                  <span className="text-sm font-semibold text-gray-800">127 / 500</span>
+                                </div>
+                                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                  <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500" style={{width: '25.4%'}}></div>
+                                </div>
+                                <div className="text-xs text-gray-500 mt-1">Осталось 373 загрузки в этом месяце</div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Activity Timeline */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Активность за последние 7 дней</h3>
+                            <div className="space-y-3">
+                              <div className="flex items-center gap-4">
+                                <div className="text-center w-16">
+                                  <div className="text-xs text-gray-500">Пн</div>
+                                  <div className="text-sm font-semibold text-gray-800">21 окт</div>
+                                </div>
+                                <div className="flex-1 h-8 bg-gradient-to-r from-purple-200 to-purple-400 rounded-lg flex items-center px-3" style={{width: '80%'}}>
+                                  <span className="text-xs text-white font-medium">8 фото</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <div className="text-center w-16">
+                                  <div className="text-xs text-gray-500">Вт</div>
+                                  <div className="text-sm font-semibold text-gray-800">22 окт</div>
+                                </div>
+                                <div className="flex-1 h-8 bg-gradient-to-r from-blue-200 to-blue-400 rounded-lg flex items-center px-3" style={{width: '60%'}}>
+                                  <span className="text-xs text-white font-medium">6 фото</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <div className="text-center w-16">
+                                  <div className="text-xs text-gray-500">Ср</div>
+                                  <div className="text-sm font-semibold text-gray-800">23 окт</div>
+                                </div>
+                                <div className="flex-1 h-8 bg-gradient-to-r from-green-200 to-green-400 rounded-lg flex items-center px-3" style={{width: '40%'}}>
+                                  <span className="text-xs text-white font-medium">4 фото</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <div className="text-center w-16">
+                                  <div className="text-xs text-gray-500">Чт</div>
+                                  <div className="text-sm font-semibold text-gray-800">24 окт</div>
+                                </div>
+                                <div className="flex-1 h-8 bg-gradient-to-r from-orange-200 to-orange-400 rounded-lg flex items-center px-3" style={{width: '90%'}}>
+                                  <span className="text-xs text-white font-medium">9 фото</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <div className="text-center w-16">
+                                  <div className="text-xs text-gray-500">Пт</div>
+                                  <div className="text-sm font-semibold text-gray-800">25 окт</div>
+                                </div>
+                                <div className="flex-1 h-8 bg-gradient-to-r from-pink-200 to-pink-400 rounded-lg flex items-center px-3" style={{width: '70%'}}>
+                                  <span className="text-xs text-white font-medium">7 фото</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Top Categories */}
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                              <h3 className="text-lg font-semibold text-gray-800 mb-4">Топ мест</h3>
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-2xl">🏖️</span>
+                                    <span className="text-sm font-medium text-gray-700">Крым</span>
+                                  </div>
+                                  <span className="text-sm text-gray-500">42 фото</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-2xl">🏙️</span>
+                                    <span className="text-sm font-medium text-gray-700">Москва</span>
+                                  </div>
+                                  <span className="text-sm text-gray-500">58 фото</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-2xl">🏛️</span>
+                                    <span className="text-sm font-medium text-gray-700">Санкт-Петербург</span>
+                                  </div>
+                                  <span className="text-sm text-gray-500">15 фото</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                              <h3 className="text-lg font-semibold text-gray-800 mb-4">Топ событий</h3>
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-2xl">🎂</span>
+                                    <span className="text-sm font-medium text-gray-700">Дни рождения</span>
+                                  </div>
+                                  <span className="text-sm text-gray-500">23 фото</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-2xl">🏖️</span>
+                                    <span className="text-sm font-medium text-gray-700">Отпуска</span>
+                                  </div>
+                                  <span className="text-sm text-gray-500">38 фото</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-2xl">🎉</span>
+                                    <span className="text-sm font-medium text-gray-700">Праздники</span>
+                                  </div>
+                                  <span className="text-sm text-gray-500">31 фото</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   ) : (
                     <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
                       <div className="text-center space-y-4">
-                        <div className="text-6xl">
-                          {activeSection === 'stats' && '📊'}
-                        </div>
-                        <h2 className="text-2xl font-bold text-gray-800">
-                          {activeSection === 'stats' && 'Статистика'}
-                        </h2>
-                        <p className="text-gray-500">Раздел в разработке</p>
+                        <div className="text-6xl">❓</div>
+                        <h2 className="text-2xl font-bold text-gray-800">Неизвестная страница</h2>
+                        <p className="text-gray-500">Выберите раздел из меню</p>
                       </div>
                     </div>
                   )}
