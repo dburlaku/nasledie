@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nadi - Диалог с помощником памяти</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -439,11 +440,9 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
           const progress = Math.min(step, totalSteps);
 
           const menuItems = [
-            { id: 'home', icon: '🏠', label: 'Главная' },
             { id: 'chat', icon: '💬', label: 'Чат с Nadi' },
             { id: 'media', icon: '📸', label: 'Медиафайлы' },
             { id: 'artifacts', icon: '🎨', label: 'Артефакты' },
-            { id: 'stats', icon: '📊', label: 'Статистика' },
           ];
 
           const chatHistory = [
@@ -510,15 +509,18 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               {/* Sidebar */}
               <div className="w-72 bg-white border-r border-gray-200 flex flex-col">
                 <div className="p-6 border-b border-gray-200">
-                  <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setActiveSection('home')}
+                    className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer w-full"
+                  >
                     <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
                       <span className="text-xl">✨</span>
                     </div>
-                    <div>
+                    <div className="text-left">
                       <h1 className="font-bold text-lg text-gray-800">Nadi</h1>
                       <p className="text-xs text-gray-500">Помощник памяти</p>
                     </div>
-                  </div>
+                  </button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto">
@@ -645,9 +647,33 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           <span>Пригласить в семейный тариф</span>
                         </button>
                       </div>
-                      <button className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all">👤 Профиль</button>
-                      <button className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all">⚙️ Настройки</button>
-                      <button className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all">📦 Моя капсула</button>
+                      <button
+                        onClick={() => {
+                          setActiveSection('profile');
+                          setShowProfile(false);
+                        }}
+                        className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all"
+                      >
+                        👤 Профиль
+                      </button>
+                      <button
+                        onClick={() => {
+                          setActiveSection('settings');
+                          setShowProfile(false);
+                        }}
+                        className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all"
+                      >
+                        ⚙️ Настройки
+                      </button>
+                      <button
+                        onClick={() => {
+                          setActiveSection('capsule');
+                          setShowProfile(false);
+                        }}
+                        className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all"
+                      >
+                        📦 Моя капсула
+                      </button>
                       <button className="w-full text-left px-3 py-2 rounded hover:bg-white transition-all text-red-600">🚪 Выйти</button>
                     </div>
                   )}
@@ -694,8 +720,8 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               <div className="grid grid-cols-3 gap-4">
                                 <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
                                   <div className="text-4xl mb-3">🎙️</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Запиши историю родственника</h5>
-                                  <p className="text-sm text-gray-600">Guided-интервью с бабушкой/дедушкой через Nadi. AI структурирует рассказ в биографию</p>
+                                  <h5 className="font-bold text-gray-800 mb-2">Интервью с бабушкой/дедушкой</h5>
+                                  <p className="text-sm text-gray-600">Интервью через Nadi. AI структурирует рассказ в биографию</p>
                                 </div>
                                 <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
                                   <div className="text-4xl mb-3">🌳</div>
@@ -1776,6 +1802,456 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                             </div>
                           </div>
                         )}
+                      </div>
+                    </div>
+                  ) : activeSection === 'capsule' ? (
+                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                      {/* Capsule Header */}
+                      <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h2 className="text-2xl font-bold text-gray-800">Моя капсула</h2>
+                            <p className="text-sm text-gray-500 mt-1">Ваша личная капсула времени и памяти</p>
+                          </div>
+                          <div className="flex gap-2">
+                            <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all font-medium">
+                              Экспорт
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Capsule Content */}
+                      <div className="flex-1 overflow-y-auto p-6">
+                        <div className="max-w-6xl mx-auto space-y-6">
+                          {/* Meta Information */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <div className="grid grid-cols-2 gap-6">
+                              <div>
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Основная информация</h3>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600">Название:</span>
+                                    <span className="font-semibold text-gray-800">Семейная капсула Петровых</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600">Дата создания:</span>
+                                    <span className="font-semibold text-gray-800">15.03.2024</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600">Последнее изменение:</span>
+                                    <span className="font-semibold text-gray-800">24.10.2025, 14:23</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600">Статус:</span>
+                                    <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">В работе</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div>
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Технические параметры</h3>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600">ID капсулы:</span>
+                                    <span className="font-mono text-xs text-gray-800">CP-2024-031545</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600">Версия:</span>
+                                    <span className="font-semibold text-gray-800">2.3</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600">Резервное копирование:</span>
+                                    <span className="text-green-600 flex items-center gap-1">
+                                      <span>✓</span>
+                                      <span>Актуально</span>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Statistics */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">📊 Статистика вашей капсулы</h3>
+
+                            {/* Storage */}
+                            <div className="mb-6">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm font-medium text-gray-700">💾 Использовано хранилища</span>
+                                <span className="text-sm font-semibold text-gray-800">5 ГБ из 20 ГБ</span>
+                              </div>
+                              <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500" style={{width: '25%'}}></div>
+                              </div>
+                            </div>
+
+                            {/* Content Stats */}
+                            <div className="grid grid-cols-4 gap-4 mb-6">
+                              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                                <div className="text-2xl mb-1">📸</div>
+                                <div className="text-2xl font-bold text-gray-800">1,247</div>
+                                <div className="text-xs text-gray-600">Фотографий</div>
+                              </div>
+                              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                                <div className="text-2xl mb-1">🎬</div>
+                                <div className="text-2xl font-bold text-gray-800">23</div>
+                                <div className="text-xs text-gray-600">Видео</div>
+                              </div>
+                              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                                <div className="text-2xl mb-1">📄</div>
+                                <div className="text-2xl font-bold text-gray-800">156</div>
+                                <div className="text-xs text-gray-600">Документов</div>
+                              </div>
+                              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                                <div className="text-2xl mb-1">🎙️</div>
+                                <div className="text-2xl font-bold text-gray-800">8</div>
+                                <div className="text-xs text-gray-600">Аудиозаписей</div>
+                              </div>
+                            </div>
+
+                            {/* Other Stats */}
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div className="space-y-2">
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">📝 Описано фото:</span>
+                                  <span className="font-semibold text-gray-800">847 (68%)</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">📖 Создано историй:</span>
+                                  <span className="font-semibold text-gray-800">34</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">🎙️ Голосовых воспоминаний:</span>
+                                  <span className="font-semibold text-gray-800">12</span>
+                                </div>
+                              </div>
+                              <div className="space-y-2">
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">👥 Добавлено людей:</span>
+                                  <span className="font-semibold text-gray-800">45</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">🔗 Связей создано:</span>
+                                  <span className="font-semibold text-gray-800">234</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600">📅 Ключевых событий:</span>
+                                  <span className="font-semibold text-gray-800">89</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Progress */}
+                            <div className="mt-6 pt-6 border-t border-gray-200">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm font-medium text-gray-700">🎯 Прогресс заполнения</span>
+                                <span className="text-sm font-semibold text-gray-800">76% завершено</span>
+                              </div>
+                              <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500" style={{width: '76%'}}></div>
+                              </div>
+                            </div>
+
+                            {/* Activity */}
+                            <div className="mt-4 grid grid-cols-3 gap-4 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">💬 Диалогов с Nadi:</span>
+                                <span className="font-semibold text-gray-800">156</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">📆 Последний сеанс:</span>
+                                <span className="font-semibold text-gray-800">2 дня назад</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">⏱️ Среднее время:</span>
+                                <span className="font-semibold text-gray-800">2ч 15мин/нед</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Sections */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">📂 Разделы капсулы</h3>
+                            <div className="space-y-3">
+                              <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all cursor-pointer">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-2xl">🏠</span>
+                                    <span className="font-semibold text-gray-800">Моя биография</span>
+                                  </div>
+                                  <span className="text-sm font-semibold text-green-600">89%</span>
+                                </div>
+                                <div className="ml-11 text-xs text-gray-600 space-y-1">
+                                  <div>└─ Основная информация</div>
+                                  <div>└─ Жизненный путь</div>
+                                  <div>└─ Ценности и взгляды</div>
+                                </div>
+                              </div>
+
+                              <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all cursor-pointer">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-2xl">👨‍👩‍👧‍👦</span>
+                                    <span className="font-semibold text-gray-800">Семейное древо</span>
+                                  </div>
+                                  <span className="text-sm font-semibold text-yellow-600">67%</span>
+                                </div>
+                                <div className="ml-11 text-xs text-gray-600 space-y-1">
+                                  <div>└─ 4 поколения / 45 персон</div>
+                                  <div>└─ Требует дополнения: 12</div>
+                                </div>
+                              </div>
+
+                              <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all cursor-pointer">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-2xl">📸</span>
+                                    <span className="font-semibold text-gray-800">Фотоархив</span>
+                                  </div>
+                                  <span className="text-sm font-semibold text-yellow-600">68%</span>
+                                </div>
+                                <div className="ml-11 text-xs text-gray-600 space-y-1">
+                                  <div>└─ 1,247 фото</div>
+                                  <div>└─ 847 описано</div>
+                                  <div>└─ 28 альбомов</div>
+                                </div>
+                              </div>
+
+                              <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all cursor-pointer">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-2xl">📝</span>
+                                    <span className="font-semibold text-gray-800">Истории и воспоминания</span>
+                                  </div>
+                                  <span className="text-sm font-semibold text-orange-600">45%</span>
+                                </div>
+                                <div className="ml-11 text-xs text-gray-600 space-y-1">
+                                  <div>└─ 34 текстовые истории</div>
+                                  <div>└─ 12 голосовых записей</div>
+                                  <div>└─ 5 черновиков</div>
+                                </div>
+                              </div>
+
+                              <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all cursor-pointer">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-2xl">📅</span>
+                                    <span className="font-semibold text-gray-800">Жизненная хронология</span>
+                                  </div>
+                                  <span className="text-sm font-semibold text-yellow-600">56%</span>
+                                </div>
+                                <div className="ml-11 text-xs text-gray-600 space-y-1">
+                                  <div>└─ 89 ключевых событий</div>
+                                  <div>└─ Охват: 1956-2025 (69 лет)</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Recent Activity */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">🕐 Последние изменения</h3>
+                            <div className="space-y-3">
+                              <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <span className="text-gray-500 text-xs mt-1">Сегодня, 14:23</span>
+                                <div className="flex-1 text-sm text-gray-700">
+                                  Добавлено 12 фото "Отпуск в Турции 2024"
+                                </div>
+                              </div>
+                              <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <span className="text-gray-500 text-xs mt-1">Вчера, 19:45</span>
+                                <div className="flex-1 text-sm text-gray-700">
+                                  Создана история "Как я встретил бабушку"
+                                </div>
+                              </div>
+                              <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <span className="text-gray-500 text-xs mt-1">3 дня назад</span>
+                                <div className="flex-1 text-sm text-gray-700">
+                                  Nadi помог описать 45 фото
+                                </div>
+                              </div>
+                            </div>
+                            <button className="w-full mt-4 text-sm text-purple-600 hover:text-purple-700 font-medium">
+                              📜 Показать всю историю изменений
+                            </button>
+                          </div>
+
+                          {/* Nadi Recommendations */}
+                          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border-2 border-purple-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">🤖 Рекомендации Nadi</h3>
+
+                            <div className="mb-4">
+                              <h4 className="text-sm font-semibold text-red-600 mb-2">⚠️ Требуют внимания:</h4>
+                              <ul className="text-sm text-gray-700 space-y-1 ml-4">
+                                <li>• 400 фото без описания</li>
+                                <li>• 5 незавершенных историй</li>
+                                <li>• 12 персон без связей</li>
+                              </ul>
+                            </div>
+
+                            <div className="mb-4">
+                              <h4 className="text-sm font-semibold text-blue-600 mb-2">💡 Предложения:</h4>
+                              <ul className="text-sm text-gray-700 space-y-2 ml-4">
+                                <li className="p-2 bg-white rounded">
+                                  "Хочешь создать альбом из фото 1995-2000 годов?"
+                                </li>
+                                <li className="p-2 bg-white rounded">
+                                  "Заметил много фото с морем - расскажешь об этих поездках?"
+                                </li>
+                                <li className="p-2 bg-white rounded">
+                                  "У тебя есть фото бабушки, но нет её истории. Запишем?"
+                                </li>
+                              </ul>
+                            </div>
+
+                            <button
+                              onClick={() => setActiveSection('chat')}
+                              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg py-3 font-semibold hover:shadow-lg transition-all"
+                            >
+                              Открыть диалог с Nadi
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : activeSection === 'settings' ? (
+                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                      {/* Settings Header */}
+                      <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-800">Настройки</h2>
+                          <p className="text-sm text-gray-500 mt-1">Управление аккаунтом и тарифами</p>
+                        </div>
+                      </div>
+
+                      {/* Settings Content */}
+                      <div className="flex-1 overflow-y-auto p-6">
+                        <div className="max-w-4xl mx-auto space-y-6">
+                          {/* Limits Section */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">📊 Лимиты</h3>
+
+                            <div className="space-y-4">
+                              {/* Storage */}
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm font-medium text-gray-700">Хранилище</span>
+                                  <span className="text-sm font-semibold text-gray-800">5 / 20 ГБ</span>
+                                </div>
+                                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                  <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500" style={{width: '25%'}}></div>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">Осталось 15 ГБ свободного места</p>
+                              </div>
+
+                              {/* Daily Limit */}
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm font-medium text-gray-700">Суточный лимит</span>
+                                  <span className="text-sm font-semibold text-gray-800">12 / 50</span>
+                                </div>
+                                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                  <div className="h-full bg-gradient-to-r from-green-500 to-teal-500" style={{width: '24%'}}></div>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">Осталось 38 загрузок сегодня</p>
+                              </div>
+
+                              {/* Monthly Limit */}
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm font-medium text-gray-700">Месячный лимит</span>
+                                  <span className="text-sm font-semibold text-gray-800">127 / 500</span>
+                                </div>
+                                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                  <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500" style={{width: '25.4%'}}></div>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">Осталось 373 загрузки в этом месяце</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Tariff Management */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">💳 Управление тарифом</h3>
+
+                            <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200 mb-4">
+                              <div className="flex items-center justify-between mb-3">
+                                <div>
+                                  <div className="text-sm text-gray-600">Текущий тариф</div>
+                                  <div className="text-xl font-bold text-purple-800">Базовый</div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-sm text-gray-600">Стоимость</div>
+                                  <div className="text-xl font-bold text-gray-800">Бесплатно</div>
+                                </div>
+                              </div>
+                              <div className="text-sm text-gray-600 space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-green-500">✓</span>
+                                  <span>20 ГБ хранилища</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-green-500">✓</span>
+                                  <span>50 загрузок в день</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-green-500">✓</span>
+                                  <span>500 загрузок в месяц</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-green-500">✓</span>
+                                  <span>Все основные функции</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg py-3 font-semibold hover:shadow-lg transition-all mb-3">
+                              Улучшить тариф
+                            </button>
+
+                            <button className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg py-3 font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                              <span>👨‍👩‍👧‍👦</span>
+                              <span>Перейти на семейный тариф</span>
+                            </button>
+                          </div>
+
+                          {/* Privacy Policy */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">🔒 Политика конфиденциальности</h3>
+
+                            <div className="space-y-4 text-sm text-gray-700">
+                              <div className="p-4 bg-gray-50 rounded-lg">
+                                <h4 className="font-semibold text-gray-800 mb-2">Приватность данных</h4>
+                                <p>Ваши данные надежно защищены и хранятся в зашифрованном виде. Мы не передаем вашу информацию третьим лицам без вашего согласия.</p>
+                              </div>
+
+                              <div className="p-4 bg-gray-50 rounded-lg">
+                                <h4 className="font-semibold text-gray-800 mb-2">Доступ к капсуле</h4>
+                                <p>Только вы и люди, которым вы предоставили доступ, могут просматривать содержимое вашей капсулы времени.</p>
+                              </div>
+
+                              <div className="p-4 bg-gray-50 rounded-lg">
+                                <h4 className="font-semibold text-gray-800 mb-2">Резервное копирование</h4>
+                                <p>Мы автоматически создаем резервные копии ваших данных для защиты от потери информации.</p>
+                              </div>
+
+                              <div className="p-4 bg-gray-50 rounded-lg">
+                                <h4 className="font-semibold text-gray-800 mb-2">Передача потомкам</h4>
+                                <p>Вы можете настроить автоматическую передачу капсулы вашим потомкам при соблюдении определенных условий.</p>
+                              </div>
+                            </div>
+
+                            <div className="mt-4 flex gap-3">
+                              <button className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all">
+                                Полная политика
+                              </button>
+                              <button className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all">
+                                Условия использования
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   ) : activeSection === 'stats' ? (
