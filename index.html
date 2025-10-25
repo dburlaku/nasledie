@@ -2130,7 +2130,54 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                         <div className="max-w-4xl mx-auto space-y-6">
                           {/* Limits Section */}
                           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4">📊 Лимиты</h3>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">⚡ Лимиты использования AI</h3>
+
+                            <div className="space-y-6">
+                              {/* Current Session */}
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm font-medium text-gray-700">Текущая сессия</span>
+                                  <span className="text-xs text-gray-500">Сброс через 3 часа 23 минуты</span>
+                                </div>
+                                <div className="h-2 bg-gray-200 rounded-full overflow-hidden mb-1">
+                                  <div className="h-full bg-gradient-to-r from-orange-500 to-red-500" style={{width: '59%'}}></div>
+                                </div>
+                                <p className="text-xs text-gray-600">59% использовано</p>
+                              </div>
+
+                              {/* Weekly Limits */}
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <div>
+                                    <span className="text-sm font-medium text-gray-700">Еженедельные лимиты</span>
+                                    <div className="text-xs text-gray-500 mt-1">Все модели</div>
+                                  </div>
+                                  <div className="text-right">
+                                    <span className="text-xs text-gray-500">Сброс в четверг в 16:00</span>
+                                  </div>
+                                </div>
+                                <div className="h-2 bg-gray-200 rounded-full overflow-hidden mb-1">
+                                  <div className="h-full bg-gradient-to-r from-green-500 to-teal-500" style={{width: '11%'}}></div>
+                                </div>
+                                <p className="text-xs text-gray-600">11% использовано</p>
+                              </div>
+
+                              <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                                <span className="text-xs text-gray-500">Последнее обновление: 1 минуту назад</span>
+                                <button className="text-xs text-purple-600 hover:text-purple-700 font-medium">
+                                  Узнать больше об ограничениях
+                                </button>
+                              </div>
+
+                              <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg py-3 font-semibold hover:shadow-lg transition-all">
+                                Расширить лимиты
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Storage Limits */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">💾 Лимиты хранилища</h3>
 
                             <div className="space-y-4">
                               {/* Storage */}
@@ -2148,7 +2195,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               {/* Daily Limit */}
                               <div>
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="text-sm font-medium text-gray-700">Суточный лимит</span>
+                                  <span className="text-sm font-medium text-gray-700">Суточный лимит загрузок</span>
                                   <span className="text-sm font-semibold text-gray-800">12 / 50</span>
                                 </div>
                                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -2160,7 +2207,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               {/* Monthly Limit */}
                               <div>
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="text-sm font-medium text-gray-700">Месячный лимит</span>
+                                  <span className="text-sm font-medium text-gray-700">Месячный лимит загрузок</span>
                                   <span className="text-sm font-semibold text-gray-800">127 / 500</span>
                                 </div>
                                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -2455,6 +2502,209 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                   <span className="text-sm text-gray-500">31 фото</span>
                                 </div>
                               </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : activeSection === 'profile' ? (
+                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                      {/* Profile Header */}
+                      <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-800">Профиль</h2>
+                          <p className="text-sm text-gray-500 mt-1">Управление данными аккаунта</p>
+                        </div>
+                      </div>
+
+                      {/* Profile Content */}
+                      <div className="flex-1 overflow-y-auto p-6">
+                        <div className="max-w-4xl mx-auto space-y-6">
+                          {/* Profile Avatar & Name */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <div className="flex items-center gap-6">
+                              <div className="w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white text-3xl font-semibold">
+                                АП
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="text-2xl font-bold text-gray-800">Александр Петров</h3>
+                                <p className="text-sm text-gray-500 mt-1">petrov@example.com</p>
+                                <button className="mt-3 text-sm text-purple-600 hover:text-purple-700 font-medium">
+                                  Изменить фото профиля
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Personal Information */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Личная информация</h3>
+                            <div className="space-y-4">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 mb-2">Имя</label>
+                                  <input
+                                    type="text"
+                                    value="Александр"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 mb-2">Фамилия</label>
+                                  <input
+                                    type="text"
+                                    value="Петров"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                  />
+                                </div>
+                              </div>
+
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input
+                                  type="email"
+                                  value="petrov@example.com"
+                                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 mb-2">Дата рождения</label>
+                                  <input
+                                    type="date"
+                                    value="1985-03-15"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 mb-2">Телефон</label>
+                                  <input
+                                    type="tel"
+                                    value="+7 (999) 123-45-67"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                  />
+                                </div>
+                              </div>
+
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Город</label>
+                                <input
+                                  type="text"
+                                  value="Москва"
+                                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">О себе</label>
+                                <textarea
+                                  rows="4"
+                                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                  placeholder="Расскажите о себе..."
+                                >Люблю путешествовать и фотографировать. Хочу сохранить все воспоминания для своих детей и внуков.</textarea>
+                              </div>
+
+                              <div className="flex gap-3 pt-4">
+                                <button className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
+                                  Сохранить изменения
+                                </button>
+                                <button className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all">
+                                  Отмена
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Account Security */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Безопасность аккаунта</h3>
+                            <div className="space-y-4">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Текущий пароль</label>
+                                <input
+                                  type="password"
+                                  placeholder="••••••••"
+                                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 mb-2">Новый пароль</label>
+                                  <input
+                                    type="password"
+                                    placeholder="••••••••"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 mb-2">Повторите пароль</label>
+                                  <input
+                                    type="password"
+                                    placeholder="••••••••"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                  />
+                                </div>
+                              </div>
+
+                              <button className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
+                                Изменить пароль
+                              </button>
+
+                              <div className="pt-4 border-t border-gray-200">
+                                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                  <div>
+                                    <h4 className="font-semibold text-gray-800">Двухфакторная аутентификация</h4>
+                                    <p className="text-sm text-gray-600 mt-1">Дополнительная защита вашего аккаунта</p>
+                                  </div>
+                                  <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all">
+                                    Включить
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Account Info */}
+                          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Информация об аккаунте</h3>
+                            <div className="space-y-3 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">ID аккаунта:</span>
+                                <span className="font-mono text-xs text-gray-800">ACC-2024-031545</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Дата регистрации:</span>
+                                <span className="font-semibold text-gray-800">15 марта 2024</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Последний вход:</span>
+                                <span className="font-semibold text-gray-800">Сегодня в 14:23</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">IP адрес:</span>
+                                <span className="font-mono text-xs text-gray-800">192.168.1.1</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Danger Zone */}
+                          <div className="bg-red-50 rounded-xl p-6 border-2 border-red-200">
+                            <h3 className="text-lg font-semibold text-red-800 mb-4">Опасная зона</h3>
+                            <p className="text-sm text-red-700 mb-4">
+                              Эти действия необратимы. Пожалуйста, будьте осторожны.
+                            </p>
+                            <div className="space-y-3">
+                              <button className="w-full px-4 py-2 border-2 border-red-300 text-red-700 rounded-lg hover:bg-red-100 transition-all text-left">
+                                Экспортировать все данные
+                              </button>
+                              <button className="w-full px-4 py-2 border-2 border-red-300 text-red-700 rounded-lg hover:bg-red-100 transition-all text-left">
+                                Деактивировать аккаунт
+                              </button>
+                              <button className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all text-left font-semibold">
+                                Удалить аккаунт навсегда
+                              </button>
                             </div>
                           </div>
                         </div>
