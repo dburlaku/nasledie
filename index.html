@@ -98,7 +98,7 @@
               location: '',
               people: '',
               event: '',
-              date: 'Август 2024',
+              date: 'Август 2025',
               tags: []
             };
             setPhotos(prev => [...prev, newPhoto]);
@@ -151,7 +151,7 @@ ${currentPhoto.tags.join(' ')}
             setIsGeneratingStory(true);
             setTimeout(() => {
               const stories = [
-                `Это было волшебное лето 2024 года. Мы с любимой отправились в ${currentPhoto.location || 'путешествие'}, чтобы отметить нашу ${currentPhoto.event || 'годовщину'}. Закат окрасил небо в невероятные оттенки розового и оранжевого, волны тихо шептали свои истории, а мы просто стояли рядом, наслаждаясь моментом. Это были те самые мгновения, когда понимаешь, что счастье — это не место назначения, а дорога, которую ты проходишь с любимым человеком.`,
+                `Это было волшебное лето 2025 года. Мы с любимой отправились в ${currentPhoto.location || 'путешествие'}, чтобы отметить нашу ${currentPhoto.event || 'годовщину'}. Закат окрасил небо в невероятные оттенки розового и оранжевого, волны тихо шептали свои истории, а мы просто стояли рядом, наслаждаясь моментом. Это были те самые мгновения, когда понимаешь, что счастье — это не место назначения, а дорога, которую ты проходишь с любимым человеком.`,
                 
                 `${currentPhoto.location || 'Это место'} стало свидетелем нашей любви. ${currentPhoto.event} — день, который мы будем помнить всегда. Море, песок под ногами, и самый важный человек рядом. Мы не планировали ничего особенного, но иногда самые простые моменты становятся самыми ценными. Этот закат, эти эмоции — всё это останется с нами навсегда.`,
                 
@@ -376,7 +376,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               setTimeout(() => {
                 addMessage('nadi', 'Вот это да! 10 лет вместе — это невероятно! 💕');
                 setTimeout(() => {
-                  addMessage('nadi', 'Я сохранил всё:\n\n📍 Крым, Коктебель\n👫 С женой\n🎉 10-я годовщина свадьбы\n📅 Август 2024\n\nТеперь это фото — не просто картинка, а целая история!');
+                  addMessage('nadi', 'Я сохранил всё:\n\n📍 Крым, Коктебель\n👫 С женой\n🎉 10-я годовщина свадьбы\n📅 Август 2025\n\nТеперь это фото — не просто картинка, а целая история!');
                   setTimeout(() => {
                     generateStory();
                   }, 500);
@@ -428,7 +428,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               setStep(9);
             } else if (step === 9) {
               addMessage('user', '4 годика');
-              updateCurrentPhoto('date', 'Сентябрь 2024');
+              updateCurrentPhoto('date', 'Сентябрь 2025');
               setTimeout(() => {
                 addMessage('nadi', 'Какая милая! 🎈 История сохранена в капсулу. Теперь у тебя ' + photos.length + ' фото с полными историями!');
               }, 1500);
@@ -456,27 +456,27 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
           ];
 
           const chatHistory = [
-            { id: 1, title: 'Отпуск в Крыму 2024', date: '21 окт', preview: 'Море, закат...' },
+            { id: 1, title: 'Отпуск в Крыму 2025', date: '21 окт', preview: 'Море, закат...' },
             { id: 2, title: 'День рождения дочери', date: '15 окт', preview: 'Арина 4 года...' },
             { id: 3, title: 'Семейный архив', date: '10 окт', preview: 'Старые фото...' },
           ];
 
           // Mock data for media library
           const mediaStats = {
-            total: 5458,
-            photos: 3452,
-            videos: 137,
-            audio: 8,
-            voice: 377,
-            files: 388,
-            links: 1457,
-            gifs: 107,
+            total: 1345,
+            photos: 800,
+            videos: 30,
+            audio: 5,
+            voice: 80,
+            files: 85,
+            links: 320,
+            gifs: 25,
             people: 12,
             events: 28,
             places: 15,
             recent: 23,
-            storageUsed: 42.3,
-            storageTotal: 100
+            storageUsed: 5,
+            storageTotal: 20
           };
 
           const peopleAlbums = [
@@ -506,7 +506,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
           ];
 
           const dateAlbums = [
-            { id: 1, name: '2024', count: 87, emoji: '📅', lastUpdate: 'Сегодня' },
+            { id: 1, name: '2025', count: 87, emoji: '📅', lastUpdate: 'Сегодня' },
             { id: 2, name: '2023', count: 45, emoji: '📅', lastUpdate: '1 год назад' },
             { id: 3, name: '2022', count: 12, emoji: '📅', lastUpdate: '2 года назад' },
             { id: 4, name: '2021', count: 6, emoji: '📅', lastUpdate: '3 года назад' },
@@ -526,7 +526,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
           // Smart Feed Data
           const smartFeedData = [
             {
-              period: 'Октябрь 2024',
+              period: 'Октябрь 2025',
               items: [
                 { id: 1, type: 'photo', emoji: '🖼️', title: 'IMG_001.jpg', imageUrl: 'https://picsum.photos/seed/img001/400/400' },
                 { id: 2, type: 'photo', emoji: '🖼️', title: 'IMG_002.jpg', imageUrl: 'https://picsum.photos/seed/img002/400/400' },
@@ -536,7 +536,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               suggestion: 'Похоже, это был отпуск'
             },
             {
-              period: 'Сентябрь 2024',
+              period: 'Сентябрь 2025',
               event: 'День рождения Арины',
               items: [
                 { id: 4, type: 'photo', emoji: '🖼️', title: 'Birthday_01.jpg', imageUrl: 'https://picsum.photos/seed/birthday01/400/400' },
@@ -553,8 +553,8 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               id: 1,
               type: 'photo',
               icon: '📷',
-              name: 'IMG_2024_0315.jpg',
-              date: '15 марта 2024',
+              name: 'IMG_2025_0315.jpg',
+              date: '15 марта 2025',
               event: 'Утренник',
               people: 'Арина, 4.5 года',
               size: '2.4 МБ',
@@ -565,8 +565,8 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               id: 2,
               type: 'video',
               icon: '🎬',
-              name: 'VIDEO_2024_0820.mp4',
-              date: '20 августа 2024',
+              name: 'VIDEO_2025_0820.mp4',
+              date: '20 августа 2025',
               event: 'Море',
               people: null,
               size: '45.8 МБ',
@@ -591,6 +591,20 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       <h1 className="font-bold text-lg text-gray-800">Nadi</h1>
                       <p className="text-xs text-gray-500">Помощник памяти</p>
                     </div>
+                  </button>
+                </div>
+
+                {/* Кнопка создания нового чата */}
+                <div className="px-4 pt-4 pb-2">
+                  <button
+                    onClick={() => {
+                      setActiveSection('chat');
+                      setMessages([]);
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg transition-all"
+                  >
+                    <span className="text-xl">✏️</span>
+                    <span>Создать новый чат</span>
                   </button>
                 </div>
 
@@ -642,23 +656,6 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                     </div>
                   )}
 
-                  {savedToCapsula && (
-                    <div className="mx-4 my-4 p-4 bg-gradient-to-r from-green-50 to-teal-50 rounded-xl border border-green-200">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center pulse-animation">
-                          <span className="text-xl">💾</span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="text-sm font-semibold text-green-800">Сохранено</div>
-                          <div className="text-xs text-green-600">{photos.length} фото</div>
-                        </div>
-                      </div>
-                      <button className="w-full bg-white border-2 border-green-300 text-green-700 rounded-lg py-2 px-4 text-sm font-medium hover:bg-green-50 transition-all flex items-center justify-center gap-2">
-                        <span>👥</span>
-                        <span>Пригласить</span>
-                      </button>
-                    </div>
-                  )}
                 </div>
 
                 <div className="border-t border-gray-200 p-4">
@@ -783,40 +780,38 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                             <h3 className="text-2xl font-bold text-gray-800 mb-6">Наши сервисы</h3>
 
                             {/* Категория: Основные сервисы */}
-                            <div className="mb-8">
-                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                                <span className="text-2xl">✨</span>
-                                <span>Основные сервисы</span>
+                            <div className="mb-12">
+                              <h4 className="text-2xl font-bold text-gray-800 mb-6">
+                                Основные сервисы
                               </h4>
-                              <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🎙️</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Интервью с бабушкой/дедушкой</h5>
-                                  <p className="text-sm text-gray-600">Интервью через Nadi. AI структурирует рассказ в биографию</p>
+                              <div className="grid grid-cols-2 gap-6">
+                                <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all cursor-pointer border-2 border-purple-200">
+                                  <div className="text-5xl mb-4">🎙️</div>
+                                  <h5 className="font-bold text-xl text-gray-800 mb-3">Интервью с бабушкой/дедушкой</h5>
+                                  <p className="text-base text-gray-700">Интервью через Nadi. AI структурирует рассказ в биографию</p>
                                 </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🌳</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Семейное древо</h5>
-                                  <p className="text-sm text-gray-600">Интерактивное создание генеалогии с привязкой фото и историй к персонам</p>
+                                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all cursor-pointer border-2 border-blue-200">
+                                  <div className="text-5xl mb-4">🌳</div>
+                                  <h5 className="font-bold text-xl text-gray-800 mb-3">Семейное древо</h5>
+                                  <p className="text-base text-gray-700">Интерактивное создание генеалогии с привязкой фото и историй к персонам</p>
                                 </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">💌</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Письмо в будущее</h5>
-                                  <p className="text-sm text-gray-600">Создание послания себе/детям/внукам на 5/10/20 лет вперед</p>
+                                <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all cursor-pointer border-2 border-pink-200">
+                                  <div className="text-5xl mb-4">💌</div>
+                                  <h5 className="font-bold text-xl text-gray-800 mb-3">Письмо в будущее</h5>
+                                  <p className="text-base text-gray-700">Создание послания себе/детям/внукам на 5/10/20 лет вперед</p>
                                 </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">📝</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Воспоминание дня</h5>
-                                  <p className="text-sm text-gray-600">Ежедневный микро-диалог с Nadi: "Что важного произошло сегодня?"</p>
+                                <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all cursor-pointer border-2 border-amber-200">
+                                  <div className="text-5xl mb-4">📝</div>
+                                  <h5 className="font-bold text-xl text-gray-800 mb-3">Воспоминание дня</h5>
+                                  <p className="text-base text-gray-700">Ежедневный микро-диалог с Nadi: "Что важного произошло сегодня?"</p>
                                 </div>
                               </div>
                             </div>
 
                             {/* Категория: Обработка контента */}
                             <div className="mb-8">
-                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                                <span className="text-2xl">🔧</span>
-                                <span>Обработка контента</span>
+                              <h4 className="text-lg font-semibold text-gray-700 mb-4">
+                                Обработка контента
                               </h4>
                               <div className="grid grid-cols-3 gap-4">
                                 <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
@@ -839,9 +834,8 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
 
                             {/* Категория: Эмоциональные сервисы */}
                             <div className="mb-8">
-                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                                <span className="text-2xl">❤️</span>
-                                <span>Эмоциональные сервисы</span>
+                              <h4 className="text-lg font-semibold text-gray-700 mb-4">
+                                Эмоциональные сервисы
                               </h4>
                               <div className="grid grid-cols-3 gap-4">
                                 <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
@@ -1075,154 +1069,132 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                     <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
                       {/* Media Header */}
                       <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        {/* Header with storage info */}
                         <div className="flex items-center justify-between mb-4">
-                          <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                            <span className="cursor-pointer hover:text-purple-600" onClick={() => setActiveSection('home')}>←</span>
-                            <span>Твоя история</span>
-                            <button
-                              onClick={() => setShowFilters(!showFilters)}
-                              className="text-sm px-3 py-1 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 font-normal ml-2"
-                            >
-                              фильтры
-                            </button>
-                          </h2>
+                          <div className="flex items-center gap-3">
+                            <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                              <span className="cursor-pointer hover:text-purple-600" onClick={() => setActiveSection('home')}>←</span>
+                              <span>Твоя история</span>
+                            </h2>
+                            <div className="text-xs text-gray-500">
+                              Всего: <span className="font-semibold text-gray-700">{mediaStats.total.toLocaleString()} элементов</span> | <span className="font-semibold text-gray-700">{mediaStats.storageUsed} ГБ из {mediaStats.storageTotal} ГБ</span>
+                            </div>
+                          </div>
                           <div className="flex gap-2">
                             <button
                               onClick={() => setDisplayMode('smartFeed')}
-                              className={`p-2 rounded-lg transition-all ${displayMode === 'smartFeed' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                              className={`p-3 rounded-lg font-bold text-lg transition-all shadow-sm ${displayMode === 'smartFeed' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' : 'bg-white border-2 border-gray-300 text-gray-600 hover:border-purple-400'}`}
                               title="Умная лента"
                             >
                               📱
                             </button>
                             <button
                               onClick={() => setDisplayMode('grid')}
-                              className={`p-2 rounded-lg transition-all ${displayMode === 'grid' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                              className={`p-3 rounded-lg font-bold text-lg transition-all shadow-sm ${displayMode === 'grid' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' : 'bg-white border-2 border-gray-300 text-gray-600 hover:border-purple-400'}`}
                               title="Сетка"
                             >
                               ⊞
                             </button>
                             <button
                               onClick={() => setDisplayMode('list')}
-                              className={`p-2 rounded-lg transition-all ${displayMode === 'list' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                              className={`p-3 rounded-lg font-bold text-lg transition-all shadow-sm ${displayMode === 'list' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' : 'bg-white border-2 border-gray-300 text-gray-600 hover:border-purple-400'}`}
                               title="Список"
                             >
                               ≡
                             </button>
-                            <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all">
-                              •••
-                            </button>
                           </div>
                         </div>
 
-                        {/* Search Bar */}
-                        <div className="mb-3">
+                        {/* Search Bar with Voice Input */}
+                        <div className="mb-4">
                           <div className="relative">
                             <input
                               type="text"
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
                               placeholder="Найди фото с мамой..."
-                              className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all"
+                              className="w-full px-4 py-3 pl-10 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all"
                             />
                             <span className="absolute left-3 top-3.5 text-xl">🔍</span>
+                            <button className="absolute right-3 top-2.5 p-1.5 hover:bg-gray-100 rounded-lg transition-all" title="Голосовой поиск">
+                              <span className="text-xl">🎤</span>
+                            </button>
                           </div>
                         </div>
 
-                        {/* Stats */}
-                        <div className="text-sm text-gray-600">
-                          Всего: <span className="font-semibold text-gray-800">{mediaStats.total.toLocaleString()} элементов</span> | <span className="font-semibold text-gray-800">{mediaStats.storageUsed} ГБ</span> из {mediaStats.storageTotal} ГБ
+                        {/* Filter Tabs */}
+                        <div className="flex gap-2 overflow-x-auto pb-2">
+                          <button
+                            onClick={() => setMediaFilter('photos')}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                              mediaFilter === 'photos'
+                                ? 'bg-purple-100 text-purple-700'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            📷 Фото ({mediaStats.photos})
+                          </button>
+                          <button
+                            onClick={() => setMediaFilter('videos')}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                              mediaFilter === 'videos'
+                                ? 'bg-purple-100 text-purple-700'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            🎬 Видео ({mediaStats.videos})
+                          </button>
+                          <button
+                            onClick={() => setMediaFilter('audio')}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                              mediaFilter === 'audio'
+                                ? 'bg-purple-100 text-purple-700'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            🎵 Аудио ({mediaStats.audio})
+                          </button>
+                          <button
+                            onClick={() => setMediaFilter('voice')}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                              mediaFilter === 'voice'
+                                ? 'bg-purple-100 text-purple-700'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            🎤 Голосовые ({mediaStats.voice})
+                          </button>
+                          <button
+                            onClick={() => setMediaFilter('files')}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                              mediaFilter === 'files'
+                                ? 'bg-purple-100 text-purple-700'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            📄 Файлы ({mediaStats.files})
+                          </button>
+                          <button
+                            onClick={() => setMediaFilter('links')}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                              mediaFilter === 'links'
+                                ? 'bg-purple-100 text-purple-700'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            🔗 Ссылки ({mediaStats.links})
+                          </button>
+                          <button
+                            onClick={() => setMediaFilter('gifs')}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                              mediaFilter === 'gifs'
+                                ? 'bg-purple-100 text-purple-700'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            GIF ({mediaStats.gifs})
+                          </button>
                         </div>
-
-                        {/* Filter Tabs - Быстрые фильтры */}
-                        {showFilters && (
-                          <div className="mt-4 pt-4 border-t border-gray-200">
-                            <div className="mb-3">
-                              <h4 className="text-xs font-semibold text-gray-600 mb-2">Быстрые фильтры</h4>
-                              <div className="flex gap-2 overflow-x-auto">
-                                <button
-                                  onClick={() => setMediaFilter('all')}
-                                  className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                                    mediaFilter === 'all'
-                                      ? 'bg-purple-100 text-purple-700'
-                                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                  }`}
-                                >
-                                  Все типы
-                                </button>
-                                <button
-                                  onClick={() => setMediaFilter('photos')}
-                                  className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                                    mediaFilter === 'photos'
-                                      ? 'bg-purple-100 text-purple-700'
-                                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                  }`}
-                                >
-                                  📷 Фото ({mediaStats.photos})
-                                </button>
-                                <button
-                                  onClick={() => setMediaFilter('videos')}
-                                  className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                                    mediaFilter === 'videos'
-                                      ? 'bg-purple-100 text-purple-700'
-                                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                  }`}
-                                >
-                                  🎬 Видео ({mediaStats.videos})
-                                </button>
-                                <button
-                                  onClick={() => setMediaFilter('audio')}
-                                  className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                                    mediaFilter === 'audio'
-                                      ? 'bg-purple-100 text-purple-700'
-                                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                  }`}
-                                >
-                                  🎵 Аудио ({mediaStats.audio})
-                                </button>
-                                <button
-                                  onClick={() => setMediaFilter('voice')}
-                                  className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                                    mediaFilter === 'voice'
-                                      ? 'bg-purple-100 text-purple-700'
-                                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                  }`}
-                                >
-                                  🎤 Голосовые ({mediaStats.voice})
-                                </button>
-                                <button
-                                  onClick={() => setMediaFilter('files')}
-                                  className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                                    mediaFilter === 'files'
-                                      ? 'bg-purple-100 text-purple-700'
-                                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                  }`}
-                                >
-                                  📄 Файлы ({mediaStats.files})
-                                </button>
-                                <button
-                                  onClick={() => setMediaFilter('links')}
-                                  className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                                    mediaFilter === 'links'
-                                      ? 'bg-purple-100 text-purple-700'
-                                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                  }`}
-                                >
-                                  🔗 Ссылки ({mediaStats.links})
-                                </button>
-                                <button
-                                  onClick={() => setMediaFilter('gifs')}
-                                  className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                                    mediaFilter === 'gifs'
-                                      ? 'bg-purple-100 text-purple-700'
-                                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                  }`}
-                                >
-                                  GIF ({mediaStats.gifs})
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
                       </div>
 
                       {/* Панель массовых действий */}
@@ -1396,9 +1368,8 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                         <div className="max-w-6xl mx-auto space-y-8">
                           {/* Active Artifact */}
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                              <span className="text-2xl">✅</span>
-                              <span>Доступно сейчас</span>
+                            <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                              Доступно сейчас
                             </h3>
                             <div className="grid grid-cols-3 gap-4">
                               <div
@@ -1421,9 +1392,8 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
 
                           {/* Coming Soon - Core Services */}
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                              <span className="text-2xl">✨</span>
-                              <span>Основные сервисы (скоро)</span>
+                            <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                              Основные сервисы (скоро)
                             </h3>
                             <div className="grid grid-cols-3 gap-4">
                               <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
@@ -1482,9 +1452,8 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
 
                           {/* Content Processing */}
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                              <span className="text-2xl">🔧</span>
-                              <span>Обработка контента (скоро)</span>
+                            <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                              Обработка контента (скоро)
                             </h3>
                             <div className="grid grid-cols-3 gap-4">
                               <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
@@ -1530,9 +1499,8 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
 
                           {/* Emotional Services */}
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                              <span className="text-2xl">❤️</span>
-                              <span>Эмоциональные сервисы (скоро)</span>
+                            <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                              Эмоциональные сервисы (скоро)
                             </h3>
                             <div className="grid grid-cols-3 gap-4">
                               <div className="bg-white rounded-xl overflow-hidden border border-gray-200 opacity-60 cursor-not-allowed relative">
@@ -2008,7 +1976,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                   </div>
                                   <div className="flex justify-between">
                                     <span className="text-gray-600">Дата создания:</span>
-                                    <span className="font-semibold text-gray-800">15.03.2024</span>
+                                    <span className="font-semibold text-gray-800">15.03.2025</span>
                                   </div>
                                   <div className="flex justify-between">
                                     <span className="text-gray-600">Последнее изменение:</span>
@@ -2025,7 +1993,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 <div className="space-y-2 text-sm">
                                   <div className="flex justify-between">
                                     <span className="text-gray-600">ID капсулы:</span>
-                                    <span className="font-mono text-xs text-gray-800">CP-2024-031545</span>
+                                    <span className="font-mono text-xs text-gray-800">CP-2025-031545</span>
                                   </div>
                                   <div className="flex justify-between">
                                     <span className="text-gray-600">Версия:</span>
@@ -2228,7 +2196,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                                 <span className="text-gray-500 text-xs mt-1">Сегодня, 14:23</span>
                                 <div className="flex-1 text-sm text-gray-700">
-                                  Добавлено 12 фото "Отпуск в Турции 2024"
+                                  Добавлено 12 фото "Отпуск в Турции 2025"
                                 </div>
                               </div>
                               <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
@@ -2844,11 +2812,11 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                             <div className="space-y-3 text-sm">
                               <div className="flex justify-between">
                                 <span className="text-gray-600">ID аккаунта:</span>
-                                <span className="font-mono text-xs text-gray-800">ACC-2024-031545</span>
+                                <span className="font-mono text-xs text-gray-800">ACC-2025-031545</span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-gray-600">Дата регистрации:</span>
-                                <span className="font-semibold text-gray-800">15 марта 2024</span>
+                                <span className="font-semibold text-gray-800">15 марта 2025</span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-gray-600">Последний вход:</span>
