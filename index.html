@@ -512,6 +512,17 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
             { id: 4, name: '2021', count: 6, emoji: '📅', lastUpdate: '3 года назад' },
           ];
 
+          const petAlbums = [
+            { id: 1, name: 'Барсик (кот)', count: 45, emoji: '🐱', lastUpdate: '1 день назад' },
+            { id: 2, name: 'Рекс (собака)', count: 32, emoji: '🐕', lastUpdate: '3 дня назад' },
+          ];
+
+          const specialCategories = [
+            { id: 1, name: 'Избранное', count: 67, emoji: '⭐', lastUpdate: 'Сегодня', color: 'bg-yellow-50 border-yellow-200' },
+            { id: 2, name: 'Воспоминания', count: 42, emoji: '💫', lastUpdate: '2 дня назад', color: 'bg-purple-50 border-purple-200' },
+            { id: 3, name: 'Дубликаты', count: 28, emoji: '📋', lastUpdate: '1 неделя назад', color: 'bg-gray-50 border-gray-300' },
+          ];
+
           const recentPhotos = [
             { id: 1, emoji: '🖼️', title: 'Фото 1', imageUrl: 'https://picsum.photos/seed/photo1/400/400' },
             { id: 2, emoji: '🖼️', title: 'Фото 2', imageUrl: 'https://picsum.photos/seed/photo2/400/400' },
@@ -521,6 +532,18 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
             { id: 6, emoji: '🖼️', title: 'Фото 6', imageUrl: 'https://picsum.photos/seed/photo6/400/400' },
             { id: 7, emoji: '🖼️', title: 'Фото 7', imageUrl: 'https://picsum.photos/seed/photo7/400/400' },
             { id: 8, emoji: '🖼️', title: 'Фото 8', imageUrl: 'https://picsum.photos/seed/photo8/400/400' },
+            { id: 9, emoji: '🖼️', title: 'Фото 9', imageUrl: 'https://picsum.photos/seed/photo9/400/400' },
+            { id: 10, emoji: '🖼️', title: 'Фото 10', imageUrl: 'https://picsum.photos/seed/photo10/400/400' },
+            { id: 11, emoji: '🖼️', title: 'Фото 11', imageUrl: 'https://picsum.photos/seed/photo11/400/400' },
+            { id: 12, emoji: '🖼️', title: 'Фото 12', imageUrl: 'https://picsum.photos/seed/photo12/400/400' },
+            { id: 13, emoji: '🖼️', title: 'Фото 13', imageUrl: 'https://picsum.photos/seed/photo13/400/400' },
+            { id: 14, emoji: '🖼️', title: 'Фото 14', imageUrl: 'https://picsum.photos/seed/photo14/400/400' },
+            { id: 15, emoji: '🖼️', title: 'Фото 15', imageUrl: 'https://picsum.photos/seed/photo15/400/400' },
+            { id: 16, emoji: '🖼️', title: 'Фото 16', imageUrl: 'https://picsum.photos/seed/photo16/400/400' },
+            { id: 17, emoji: '🖼️', title: 'Фото 17', imageUrl: 'https://picsum.photos/seed/photo17/400/400' },
+            { id: 18, emoji: '🖼️', title: 'Фото 18', imageUrl: 'https://picsum.photos/seed/photo18/400/400' },
+            { id: 19, emoji: '🖼️', title: 'Фото 19', imageUrl: 'https://picsum.photos/seed/photo19/400/400' },
+            { id: 20, emoji: '🖼️', title: 'Фото 20', imageUrl: 'https://picsum.photos/seed/photo20/400/400' },
           ];
 
           // Smart Feed Data
@@ -601,10 +624,10 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       setActiveSection('chat');
                       setMessages([]);
                     }}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg transition-all"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-all"
                   >
-                    <span className="text-xl">✏️</span>
-                    <span>Создать новый чат</span>
+                    <span className="text-lg">+</span>
+                    <span>Новый чат</span>
                   </button>
                 </div>
 
@@ -777,8 +800,6 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
 
                           {/* Services Grid */}
                           <div>
-                            <h3 className="text-2xl font-bold text-gray-800 mb-6">Наши сервисы</h3>
-
                             {/* Категория: Основные сервисы */}
                             <div className="mb-12">
                               <h4 className="text-2xl font-bold text-gray-800 mb-6">
@@ -1080,27 +1101,27 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               Всего: <span className="font-semibold text-gray-700">{mediaStats.total.toLocaleString()} элементов</span> | <span className="font-semibold text-gray-700">{mediaStats.storageUsed} ГБ из {mediaStats.storageTotal} ГБ</span>
                             </div>
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex gap-3">
                             <button
                               onClick={() => setDisplayMode('smartFeed')}
-                              className={`p-3 rounded-lg font-bold text-lg transition-all shadow-sm ${displayMode === 'smartFeed' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' : 'bg-white border-2 border-gray-300 text-gray-600 hover:border-purple-400'}`}
-                              title="Умная лента"
+                              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all ${displayMode === 'smartFeed' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' : 'bg-white border-2 border-gray-300 text-gray-600 hover:border-purple-400'}`}
                             >
-                              📱
+                              <span className="text-xl">📱</span>
+                              <span className="text-xs font-medium">Лента</span>
                             </button>
                             <button
                               onClick={() => setDisplayMode('grid')}
-                              className={`p-3 rounded-lg font-bold text-lg transition-all shadow-sm ${displayMode === 'grid' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' : 'bg-white border-2 border-gray-300 text-gray-600 hover:border-purple-400'}`}
-                              title="Сетка"
+                              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all ${displayMode === 'grid' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' : 'bg-white border-2 border-gray-300 text-gray-600 hover:border-purple-400'}`}
                             >
-                              ⊞
+                              <span className="text-xl">⊞</span>
+                              <span className="text-xs font-medium">Сетка</span>
                             </button>
                             <button
                               onClick={() => setDisplayMode('list')}
-                              className={`p-3 rounded-lg font-bold text-lg transition-all shadow-sm ${displayMode === 'list' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' : 'bg-white border-2 border-gray-300 text-gray-600 hover:border-purple-400'}`}
-                              title="Список"
+                              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all ${displayMode === 'list' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' : 'bg-white border-2 border-gray-300 text-gray-600 hover:border-purple-400'}`}
                             >
-                              ≡
+                              <span className="text-xl">≡</span>
+                              <span className="text-xs font-medium">Список</span>
                             </button>
                           </div>
                         </div>
@@ -1225,8 +1246,87 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
 
                       {/* Media Content */}
                       <div className="flex-1 overflow-y-auto p-6">
-                        {/* Smart Feed View */}
-                        {displayMode === 'smartFeed' && (
+                        {/* Photos Category View */}
+                        {mediaFilter === 'photos' ? (
+                          <div className="max-w-6xl mx-auto space-y-8">
+                            {/* Специальные категории */}
+                            <div>
+                              <h3 className="text-lg font-bold text-gray-800 mb-4">Особые категории</h3>
+                              <div className="grid grid-cols-3 gap-4">
+                                {specialCategories.map((category) => (
+                                  <div key={category.id} className={`${category.color} rounded-xl p-6 border-2 cursor-pointer hover:shadow-lg transition-all`}>
+                                    <div className="flex items-center justify-between mb-2">
+                                      <span className="text-3xl">{category.emoji}</span>
+                                      <span className="text-xs text-gray-500">{category.lastUpdate}</span>
+                                    </div>
+                                    <h4 className="text-xl font-bold text-gray-800 mb-1">{category.name}</h4>
+                                    <p className="text-sm text-gray-600">{category.count} фото</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Люди */}
+                            <div>
+                              <h3 className="text-lg font-bold text-gray-800 mb-4">Люди</h3>
+                              <div className="grid grid-cols-4 gap-4">
+                                {peopleAlbums.map((person) => (
+                                  <div key={person.id} className="bg-white rounded-xl p-4 border border-gray-200 cursor-pointer hover:shadow-lg transition-all">
+                                    <div className="flex flex-col items-center">
+                                      <div className="w-20 h-20 bg-gradient-to-br from-purple-300 to-pink-300 rounded-full flex items-center justify-center text-4xl mb-3">
+                                        {person.emoji}
+                                      </div>
+                                      <h4 className="font-bold text-gray-800 text-center mb-1">{person.name}</h4>
+                                      <p className="text-sm text-gray-600">{person.count} фото</p>
+                                      <p className="text-xs text-gray-500 mt-1">{person.lastUpdate}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Питомцы */}
+                            <div>
+                              <h3 className="text-lg font-bold text-gray-800 mb-4">Питомцы</h3>
+                              <div className="grid grid-cols-4 gap-4">
+                                {petAlbums.map((pet) => (
+                                  <div key={pet.id} className="bg-white rounded-xl p-4 border border-gray-200 cursor-pointer hover:shadow-lg transition-all">
+                                    <div className="flex flex-col items-center">
+                                      <div className="w-20 h-20 bg-gradient-to-br from-orange-300 to-amber-300 rounded-full flex items-center justify-center text-4xl mb-3">
+                                        {pet.emoji}
+                                      </div>
+                                      <h4 className="font-bold text-gray-800 text-center mb-1">{pet.name}</h4>
+                                      <p className="text-sm text-gray-600">{pet.count} фото</p>
+                                      <p className="text-xs text-gray-500 mt-1">{pet.lastUpdate}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Альбомы (События) */}
+                            <div>
+                              <h3 className="text-lg font-bold text-gray-800 mb-4">Альбомы</h3>
+                              <div className="grid grid-cols-3 gap-4">
+                                {eventAlbums.map((album) => (
+                                  <div key={album.id} className="bg-white rounded-xl p-5 border border-gray-200 cursor-pointer hover:shadow-lg transition-all">
+                                    <div className="flex items-center gap-3 mb-2">
+                                      <span className="text-3xl">{album.emoji}</span>
+                                      <div className="flex-1">
+                                        <h4 className="font-bold text-gray-800">{album.name}</h4>
+                                        <p className="text-sm text-gray-600">{album.count} фото</p>
+                                      </div>
+                                    </div>
+                                    <p className="text-xs text-gray-500">{album.lastUpdate}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            {/* Smart Feed View */}
+                            {displayMode === 'smartFeed' && (
                           <div className="space-y-6 max-w-4xl mx-auto">
                             {smartFeedData.map((period, idx) => (
                               <div key={idx} className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
@@ -1350,6 +1450,8 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               </div>
                             ))}
                           </div>
+                        )}
+                          </>
                         )}
                       </div>
                     </div>
