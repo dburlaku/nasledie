@@ -555,6 +555,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                 { id: 102, type: 'photos', emoji: '🖼️', title: 'Арина строит замок из песка', imageUrl: 'https://picsum.photos/seed/arina-sand-castle/400/400' },
                 { id: 103, type: 'videos', emoji: '🎬', title: 'Видео заката в Крыму', imageUrl: 'https://picsum.photos/seed/couple-sunset-crimea/400/400' },
                 { id: 104, type: 'links', emoji: '🔗', title: 'Отель в Крыму' },
+                { id: 105, type: 'gifs', emoji: 'GIF', title: 'Семейное веселье', imageUrl: 'https://picsum.photos/seed/family-fun-gif/400/400' },
               ],
               totalCount: 18,
               suggestion: 'Похоже, это был отпуск'
@@ -568,6 +569,8 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                 { id: 203, type: 'videos', emoji: '🎬', title: 'Видео с поздравлениями', imageUrl: 'https://picsum.photos/seed/grandparents-arina-bday/400/400' },
                 { id: 204, type: 'audio', emoji: '🎵', title: 'Песня на день рождения' },
                 { id: 205, type: 'links', emoji: '🔗', title: 'Рецепт торта' },
+                { id: 206, type: 'gifs', emoji: 'GIF', title: 'Праздничная анимация', imageUrl: 'https://picsum.photos/seed/birthday-gif/400/400' },
+                { id: 207, type: 'files', emoji: '📄', title: 'Школьные документы', imageUrl: 'https://picsum.photos/seed/documents-school/400/400' },
               ],
               totalCount: 11
             },
@@ -578,9 +581,21 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                 { id: 302, type: 'videos', emoji: '🎬', title: 'Рекс бегает по полю', imageUrl: 'https://picsum.photos/seed/rex-running-field/400/400' },
                 { id: 303, type: 'photos', emoji: '🖼️', title: 'Барсик на дереве', imageUrl: 'https://picsum.photos/seed/barsik-tree-climbing/400/400' },
                 { id: 304, type: 'voice', emoji: '🎤', title: 'Голосовая заметка о выходных' },
+                { id: 305, type: 'gifs', emoji: 'GIF', title: 'Барсик прыгает', imageUrl: 'https://picsum.photos/seed/cat-jumping-gif/400/400' },
+                { id: 306, type: 'gifs', emoji: 'GIF', title: 'Рекс играет', imageUrl: 'https://picsum.photos/seed/dog-playing-gif/400/400' },
               ],
               totalCount: 12,
               suggestion: 'Летние выходные'
+            },
+            {
+              period: 'Июль 2025',
+              items: [
+                { id: 401, type: 'files', emoji: '📄', title: 'Договор на квартиру', imageUrl: 'https://picsum.photos/seed/apartment-contract/400/400' },
+                { id: 402, type: 'files', emoji: '📄', title: 'Бабушкины рецепты', imageUrl: 'https://picsum.photos/seed/grandma-recipes/400/400' },
+                { id: 403, type: 'gifs', emoji: 'GIF', title: 'Смешной кот', imageUrl: 'https://picsum.photos/seed/barsik-hunt/400/400' },
+              ],
+              totalCount: 8,
+              suggestion: 'Домашние дела'
             }
           ];
 
@@ -720,6 +735,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               size: '1.2 МБ',
               hasDescription: false,
               isFavorite: false,
+              imageUrl: 'https://picsum.photos/seed/documents-school/400/400',
               title: 'Школьные документы'
             },
             {
@@ -762,6 +778,118 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               isFavorite: true,
               imageUrl: 'https://picsum.photos/seed/family-crimea-beach/400/400',
               title: 'Семья на пляже в Крыму'
+            },
+            {
+              id: 13,
+              type: 'files',
+              icon: '📄',
+              name: 'Свидетельство_рождения.pdf',
+              date: '15 марта 2025',
+              event: 'Документы',
+              people: 'Арина',
+              size: '856 КБ',
+              hasDescription: false,
+              isFavorite: true,
+              imageUrl: 'https://picsum.photos/seed/birth-certificate/400/400',
+              title: 'Свидетельство о рождении'
+            },
+            {
+              id: 14,
+              type: 'files',
+              icon: '📄',
+              name: 'Договор_квартира.pdf',
+              date: '5 июня 2025',
+              event: 'Недвижимость',
+              people: null,
+              size: '2.4 МБ',
+              hasDescription: false,
+              isFavorite: false,
+              imageUrl: 'https://picsum.photos/seed/apartment-contract/400/400',
+              title: 'Договор на квартиру'
+            },
+            {
+              id: 15,
+              type: 'files',
+              icon: '📄',
+              name: 'Паспорт_скан.pdf',
+              date: '1 января 2025',
+              event: 'Документы',
+              people: 'Я',
+              size: '1.8 МБ',
+              hasDescription: false,
+              isFavorite: false,
+              imageUrl: 'https://picsum.photos/seed/passport-scan/400/400',
+              title: 'Скан паспорта'
+            },
+            {
+              id: 16,
+              type: 'gifs',
+              icon: 'GIF',
+              name: 'birthday_celebration.gif',
+              date: '5 сентября 2025',
+              event: 'День рождения',
+              people: null,
+              size: '3.2 МБ',
+              hasDescription: false,
+              isFavorite: false,
+              imageUrl: 'https://picsum.photos/seed/birthday-gif/400/400',
+              title: 'Праздничная анимация'
+            },
+            {
+              id: 17,
+              type: 'gifs',
+              icon: 'GIF',
+              name: 'dog_playing.gif',
+              date: '6 августа 2025',
+              event: 'Прогулка',
+              people: 'Рекс',
+              size: '2.8 МБ',
+              hasDescription: false,
+              isFavorite: true,
+              imageUrl: 'https://picsum.photos/seed/dog-playing-gif/400/400',
+              title: 'Рекс играет'
+            },
+            {
+              id: 18,
+              type: 'gifs',
+              icon: 'GIF',
+              name: 'family_fun.gif',
+              date: '12 октября 2025',
+              event: 'Отпуск',
+              people: 'Вся семья',
+              size: '4.1 МБ',
+              hasDescription: false,
+              isFavorite: false,
+              imageUrl: 'https://picsum.photos/seed/family-fun-gif/400/400',
+              title: 'Семейное веселье'
+            },
+            {
+              id: 19,
+              type: 'files',
+              icon: '📄',
+              name: 'Рецепты_бабушки.docx',
+              date: '20 мая 2025',
+              event: 'Семья',
+              people: 'Родители',
+              size: '542 КБ',
+              hasDescription: true,
+              isFavorite: true,
+              imageUrl: 'https://picsum.photos/seed/grandma-recipes/400/400',
+              title: 'Бабушкины рецепты'
+            },
+            {
+              id: 20,
+              type: 'gifs',
+              icon: 'GIF',
+              name: 'cat_jumping.gif',
+              date: '28 июля 2025',
+              event: 'Дома',
+              people: 'Барсик',
+              size: '1.9 МБ',
+              hasDescription: false,
+              isFavorite: false,
+              imageUrl: 'https://picsum.photos/seed/cat-jumping-gif/400/400',
+              title: 'Барсик прыгает'
             },
           ];
 
@@ -1717,6 +1845,22 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 <div className="p-6">
                                   <h3 className="font-bold text-lg text-gray-800 mb-2">Фотопоздравление</h3>
                                   <p className="text-sm text-gray-600">Создайте праздничное поздравление с фотографиями</p>
+                                </div>
+                              </div>
+
+                              {/* Create Custom Artifact Card */}
+                              <div
+                                onClick={() => {
+                                  alert('Функция создания своего артефакта скоро будет доступна! Здесь вы сможете создать уникальный артефакт: книгу воспоминаний, семейную хронику, коллаж из фотографий и многое другое.');
+                                }}
+                                className="bg-white rounded-xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-purple-400 hover:shadow-2xl hover:scale-105 transition-all cursor-pointer group"
+                              >
+                                <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-7xl relative">
+                                  <span className="group-hover:scale-110 transition-transform text-gray-400 group-hover:text-purple-500">➕</span>
+                                </div>
+                                <div className="p-6">
+                                  <h3 className="font-bold text-lg text-gray-800 mb-2">Создать свой артефакт</h3>
+                                  <p className="text-sm text-gray-600">Создайте уникальный артефакт по своему желанию</p>
                                 </div>
                               </div>
                             </div>
