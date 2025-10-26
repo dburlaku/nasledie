@@ -89,10 +89,12 @@
           };
 
           const addPhoto = (emoji, gradient) => {
+            const photoId = Date.now();
             const newPhoto = {
-              id: Date.now(),
+              id: photoId,
               emoji: emoji,
               gradient: gradient,
+              imageUrl: `https://picsum.photos/seed/photo${photoId}/400/400`,
               location: '',
               people: '',
               event: '',
@@ -222,8 +224,9 @@ ${currentPhoto.tags.join(' ')}
 
           const handleAddGreetingPhoto = () => {
             if (greetingPhotos.length < 20) {
+              const photoId = Date.now();
               const newPhoto = {
-                id: Date.now(),
+                id: photoId,
                 emoji: ['🎉', '🎂', '🎈', '🌅', '🏖️', '🎊', '💐', '🌸'][Math.floor(Math.random() * 8)],
                 gradient: [
                   'from-purple-400 to-pink-400',
@@ -231,7 +234,8 @@ ${currentPhoto.tags.join(' ')}
                   'from-green-400 to-emerald-400',
                   'from-orange-400 to-red-400',
                   'from-yellow-400 to-orange-400'
-                ][Math.floor(Math.random() * 5)]
+                ][Math.floor(Math.random() * 5)],
+                imageUrl: `https://picsum.photos/seed/greeting${photoId}/400/400`
               };
               setGreetingPhotos([...greetingPhotos, newPhoto]);
             }
@@ -509,14 +513,14 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
           ];
 
           const recentPhotos = [
-            { id: 1, emoji: '🖼️', title: 'Фото 1' },
-            { id: 2, emoji: '🖼️', title: 'Фото 2' },
-            { id: 3, emoji: '🖼️', title: 'Фото 3' },
-            { id: 4, emoji: '🖼️', title: 'Фото 4' },
-            { id: 5, emoji: '🖼️', title: 'Фото 5' },
-            { id: 6, emoji: '🖼️', title: 'Фото 6' },
-            { id: 7, emoji: '🖼️', title: 'Фото 7' },
-            { id: 8, emoji: '🖼️', title: 'Фото 8' },
+            { id: 1, emoji: '🖼️', title: 'Фото 1', imageUrl: 'https://picsum.photos/seed/photo1/400/400' },
+            { id: 2, emoji: '🖼️', title: 'Фото 2', imageUrl: 'https://picsum.photos/seed/photo2/400/400' },
+            { id: 3, emoji: '🖼️', title: 'Фото 3', imageUrl: 'https://picsum.photos/seed/photo3/400/400' },
+            { id: 4, emoji: '🖼️', title: 'Фото 4', imageUrl: 'https://picsum.photos/seed/photo4/400/400' },
+            { id: 5, emoji: '🖼️', title: 'Фото 5', imageUrl: 'https://picsum.photos/seed/photo5/400/400' },
+            { id: 6, emoji: '🖼️', title: 'Фото 6', imageUrl: 'https://picsum.photos/seed/photo6/400/400' },
+            { id: 7, emoji: '🖼️', title: 'Фото 7', imageUrl: 'https://picsum.photos/seed/photo7/400/400' },
+            { id: 8, emoji: '🖼️', title: 'Фото 8', imageUrl: 'https://picsum.photos/seed/photo8/400/400' },
           ];
 
           // Smart Feed Data
@@ -524,9 +528,9 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
             {
               period: 'Октябрь 2024',
               items: [
-                { id: 1, type: 'photo', emoji: '🖼️', title: 'IMG_001.jpg' },
-                { id: 2, type: 'photo', emoji: '🖼️', title: 'IMG_002.jpg' },
-                { id: 3, type: 'photo', emoji: '🖼️', title: 'IMG_003.jpg' },
+                { id: 1, type: 'photo', emoji: '🖼️', title: 'IMG_001.jpg', imageUrl: 'https://picsum.photos/seed/img001/400/400' },
+                { id: 2, type: 'photo', emoji: '🖼️', title: 'IMG_002.jpg', imageUrl: 'https://picsum.photos/seed/img002/400/400' },
+                { id: 3, type: 'photo', emoji: '🖼️', title: 'IMG_003.jpg', imageUrl: 'https://picsum.photos/seed/img003/400/400' },
               ],
               totalCount: 18,
               suggestion: 'Похоже, это был отпуск'
@@ -535,9 +539,9 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               period: 'Сентябрь 2024',
               event: 'День рождения Арины',
               items: [
-                { id: 4, type: 'photo', emoji: '🖼️', title: 'Birthday_01.jpg' },
+                { id: 4, type: 'photo', emoji: '🖼️', title: 'Birthday_01.jpg', imageUrl: 'https://picsum.photos/seed/birthday01/400/400' },
                 { id: 5, type: 'video', emoji: '🎬', title: 'Birthday_video.mp4' },
-                { id: 6, type: 'photo', emoji: '🖼️', title: 'Birthday_02.jpg' },
+                { id: 6, type: 'photo', emoji: '🖼️', title: 'Birthday_02.jpg', imageUrl: 'https://picsum.photos/seed/birthday02/400/400' },
               ],
               totalCount: 11
             },
@@ -1266,8 +1270,12 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 </div>
                                 <div className="grid grid-cols-3 gap-3 mb-4">
                                   {period.items.map((item) => (
-                                    <div key={item.id} className="aspect-square bg-gradient-to-br from-purple-300 to-pink-300 rounded-lg flex items-center justify-center text-4xl cursor-pointer hover:scale-105 transition-all">
-                                      {item.emoji}
+                                    <div key={item.id} className="aspect-square bg-gradient-to-br from-purple-300 to-pink-300 rounded-lg flex items-center justify-center text-4xl cursor-pointer hover:scale-105 transition-all overflow-hidden">
+                                      {item.type === 'photo' && item.imageUrl ? (
+                                        <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                                      ) : (
+                                        <span>{item.emoji}</span>
+                                      )}
                                     </div>
                                   ))}
                                 </div>
@@ -1303,8 +1311,12 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                             <div className="grid grid-cols-5 gap-4">
                               {recentPhotos.map(photo => (
                                 <div key={photo.id} className="relative group">
-                                  <div className="aspect-square bg-gradient-to-br from-purple-300 to-pink-300 rounded-xl flex items-center justify-center text-5xl cursor-pointer hover:scale-105 transition-all shadow-lg">
-                                    {photo.emoji}
+                                  <div className="aspect-square bg-gradient-to-br from-purple-300 to-pink-300 rounded-xl flex items-center justify-center text-5xl cursor-pointer hover:scale-105 transition-all shadow-lg overflow-hidden">
+                                    {photo.imageUrl ? (
+                                      <img src={photo.imageUrl} alt={photo.title} className="w-full h-full object-cover" />
+                                    ) : (
+                                      <span>{photo.emoji}</span>
+                                    )}
                                   </div>
                                   <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <input
@@ -1735,8 +1747,12 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 <div className="grid grid-cols-5 gap-4">
                                   {greetingPhotos.map((photo) => (
                                     <div key={photo.id} className="relative group">
-                                      <div className={`aspect-square bg-gradient-to-br ${photo.gradient} rounded-xl flex items-center justify-center text-4xl shadow-lg`}>
-                                        {photo.emoji}
+                                      <div className={`aspect-square bg-gradient-to-br ${photo.gradient} rounded-xl flex items-center justify-center text-4xl shadow-lg overflow-hidden`}>
+                                        {photo.imageUrl ? (
+                                          <img src={photo.imageUrl} alt="Greeting photo" className="w-full h-full object-cover" />
+                                        ) : (
+                                          <span>{photo.emoji}</span>
+                                        )}
                                       </div>
                                       <button
                                         onClick={() => handleRemoveGreetingPhoto(photo.id)}
@@ -2904,7 +2920,11 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       <div className="relative">
                         <div className="relative rounded-xl overflow-hidden shadow-lg">
                           <div className={`bg-gradient-to-br ${currentPhoto.gradient} w-full aspect-[4/3] flex items-center justify-center text-8xl`}>
-                            {currentPhoto.emoji}
+                            {currentPhoto.imageUrl ? (
+                              <img src={currentPhoto.imageUrl} alt="Current photo" className="w-full h-full object-cover" />
+                            ) : (
+                              <span>{currentPhoto.emoji}</span>
+                            )}
                           </div>
                           {currentPhoto.event && (
                             <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow-lg flex items-center gap-1">
