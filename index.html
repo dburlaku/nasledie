@@ -547,13 +547,14 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
           ];
 
           // Smart Feed Data
-          const smartFeedData = [
+          const allSmartFeedData = [
             {
               period: 'Октябрь 2025',
               items: [
-                { id: 1, type: 'photo', emoji: '🖼️', title: 'Семья на пляже в Крыму', imageUrl: 'https://picsum.photos/seed/family-crimea-beach/400/400' },
-                { id: 2, type: 'photo', emoji: '🖼️', title: 'Арина строит замок из песка', imageUrl: 'https://picsum.photos/seed/arina-sand-castle/400/400' },
-                { id: 3, type: 'photo', emoji: '🖼️', title: 'Я и Даша на закате', imageUrl: 'https://picsum.photos/seed/couple-sunset-crimea/400/400' },
+                { id: 101, type: 'photos', emoji: '🖼️', title: 'Семья на пляже в Крыму', imageUrl: 'https://picsum.photos/seed/family-crimea-beach/400/400' },
+                { id: 102, type: 'photos', emoji: '🖼️', title: 'Арина строит замок из песка', imageUrl: 'https://picsum.photos/seed/arina-sand-castle/400/400' },
+                { id: 103, type: 'videos', emoji: '🎬', title: 'Видео заката в Крыму', imageUrl: 'https://picsum.photos/seed/couple-sunset-crimea/400/400' },
+                { id: 104, type: 'links', emoji: '🔗', title: 'Отель в Крыму' },
               ],
               totalCount: 18,
               suggestion: 'Похоже, это был отпуск'
@@ -562,29 +563,45 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               period: 'Сентябрь 2025',
               event: 'День рождения Арины',
               items: [
-                { id: 4, type: 'photo', emoji: '🖼️', title: 'Арина задувает свечи', imageUrl: 'https://picsum.photos/seed/arina-blowing-candles/400/400' },
-                { id: 5, type: 'photo', emoji: '🖼️', title: 'Барсик на празднике', imageUrl: 'https://picsum.photos/seed/barsik-birthday-party/400/400' },
-                { id: 6, type: 'photo', emoji: '🖼️', title: 'Родители с Ариной', imageUrl: 'https://picsum.photos/seed/grandparents-arina-bday/400/400' },
+                { id: 201, type: 'photos', emoji: '🖼️', title: 'Арина задувает свечи', imageUrl: 'https://picsum.photos/seed/arina-blowing-candles/400/400' },
+                { id: 202, type: 'photos', emoji: '🖼️', title: 'Барсик на празднике', imageUrl: 'https://picsum.photos/seed/barsik-birthday-party/400/400' },
+                { id: 203, type: 'videos', emoji: '🎬', title: 'Видео с поздравлениями', imageUrl: 'https://picsum.photos/seed/grandparents-arina-bday/400/400' },
+                { id: 204, type: 'audio', emoji: '🎵', title: 'Песня на день рождения' },
+                { id: 205, type: 'links', emoji: '🔗', title: 'Рецепт торта' },
               ],
               totalCount: 11
             },
             {
               period: 'Август 2025',
               items: [
-                { id: 7, type: 'photo', emoji: '🖼️', title: 'Пикник с друзьями', imageUrl: 'https://picsum.photos/seed/friends-picnic-august/400/400' },
-                { id: 8, type: 'photo', emoji: '🖼️', title: 'Рекс бегает по полю', imageUrl: 'https://picsum.photos/seed/rex-running-field/400/400' },
-                { id: 9, type: 'photo', emoji: '🖼️', title: 'Барсик на дереве', imageUrl: 'https://picsum.photos/seed/barsik-tree-climbing/400/400' },
+                { id: 301, type: 'photos', emoji: '🖼️', title: 'Пикник с друзьями', imageUrl: 'https://picsum.photos/seed/friends-picnic-august/400/400' },
+                { id: 302, type: 'videos', emoji: '🎬', title: 'Рекс бегает по полю', imageUrl: 'https://picsum.photos/seed/rex-running-field/400/400' },
+                { id: 303, type: 'photos', emoji: '🖼️', title: 'Барсик на дереве', imageUrl: 'https://picsum.photos/seed/barsik-tree-climbing/400/400' },
+                { id: 304, type: 'voice', emoji: '🎤', title: 'Голосовая заметка о выходных' },
               ],
               totalCount: 12,
               suggestion: 'Летние выходные'
             }
           ];
 
+          // Filter smart feed data based on selected filter
+          const getFilteredSmartFeed = () => {
+            if (mediaFilter === 'all') {
+              return allSmartFeedData;
+            }
+            return allSmartFeedData.map(period => ({
+              ...period,
+              items: period.items.filter(item => item.type === mediaFilter)
+            })).filter(period => period.items.length > 0);
+          };
+
+          const smartFeedData = getFilteredSmartFeed();
+
           // Media items for grid/list view
-          const mediaItems = [
+          const allMediaItems = [
             {
               id: 1,
-              type: 'photo',
+              type: 'photos',
               icon: '📷',
               name: 'IMG_2025_0315.jpg',
               date: '15 марта 2025',
@@ -592,11 +609,13 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               people: 'Арина, 4.5 года',
               size: '2.4 МБ',
               hasDescription: true,
-              isFavorite: false
+              isFavorite: false,
+              imageUrl: 'https://picsum.photos/seed/arina-mom/400/400',
+              title: 'Арина с мамой'
             },
             {
               id: 2,
-              type: 'video',
+              type: 'videos',
               icon: '🎬',
               name: 'VIDEO_2025_0820.mp4',
               date: '20 августа 2025',
@@ -604,9 +623,157 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               people: null,
               size: '45.8 МБ',
               hasDescription: false,
-              isFavorite: false
+              isFavorite: false,
+              imageUrl: 'https://picsum.photos/seed/dasha-sea/400/400',
+              title: 'С Дашей на море'
+            },
+            {
+              id: 3,
+              type: 'photos',
+              icon: '📷',
+              name: 'IMG_2025_0822.jpg',
+              date: '22 августа 2025',
+              event: 'Пикник',
+              people: 'Друзья',
+              size: '3.1 МБ',
+              hasDescription: true,
+              isFavorite: true,
+              imageUrl: 'https://picsum.photos/seed/friends-picnic/400/400',
+              title: 'Друзья на пикнике'
+            },
+            {
+              id: 4,
+              type: 'photos',
+              icon: '📷',
+              name: 'IMG_2025_0905.jpg',
+              date: '5 сентября 2025',
+              event: 'День рождения',
+              people: 'Арина',
+              size: '2.8 МБ',
+              hasDescription: true,
+              isFavorite: true,
+              imageUrl: 'https://picsum.photos/seed/arina-blowing-candles/400/400',
+              title: 'Арина задувает свечи'
+            },
+            {
+              id: 5,
+              type: 'videos',
+              icon: '🎬',
+              name: 'VIDEO_2025_0806.mp4',
+              date: '6 августа 2025',
+              event: 'Прогулка',
+              people: 'Рекс',
+              size: '52.3 МБ',
+              hasDescription: false,
+              isFavorite: false,
+              imageUrl: 'https://picsum.photos/seed/rex-running-field/400/400',
+              title: 'Рекс бегает по полю'
+            },
+            {
+              id: 6,
+              type: 'photos',
+              icon: '📷',
+              name: 'IMG_2025_0728.jpg',
+              date: '28 июля 2025',
+              event: 'Дома',
+              people: 'Барсик',
+              size: '1.9 МБ',
+              hasDescription: true,
+              isFavorite: true,
+              imageUrl: 'https://picsum.photos/seed/barsik-sleeping/400/400',
+              title: 'Барсик спит на диване'
+            },
+            {
+              id: 7,
+              type: 'audio',
+              icon: '🎵',
+              name: 'Песня_свадьба.mp3',
+              date: '12 июня 2025',
+              event: 'Свадьба',
+              people: null,
+              size: '4.2 МБ',
+              hasDescription: false,
+              isFavorite: false,
+              title: 'Свадебная песня'
+            },
+            {
+              id: 8,
+              type: 'voice',
+              icon: '🎤',
+              name: 'Голосовое_заметка_001.m4a',
+              date: '3 октября 2025',
+              event: 'Заметки',
+              people: null,
+              size: '856 КБ',
+              hasDescription: false,
+              isFavorite: false,
+              title: 'Заметка о планах'
+            },
+            {
+              id: 9,
+              type: 'files',
+              icon: '📄',
+              name: 'Документы_школа.pdf',
+              date: '1 сентября 2025',
+              event: 'Школа',
+              people: 'Арина',
+              size: '1.2 МБ',
+              hasDescription: false,
+              isFavorite: false,
+              title: 'Школьные документы'
+            },
+            {
+              id: 10,
+              type: 'links',
+              icon: '🔗',
+              name: 'Рецепт торта',
+              date: '4 сентября 2025',
+              event: 'День рождения',
+              people: null,
+              size: '12 КБ',
+              hasDescription: false,
+              isFavorite: false,
+              title: 'Ссылка на рецепт'
+            },
+            {
+              id: 11,
+              type: 'gifs',
+              icon: 'GIF',
+              name: 'funny_cat.gif',
+              date: '15 июля 2025',
+              event: 'Развлечение',
+              people: null,
+              size: '2.5 МБ',
+              hasDescription: false,
+              isFavorite: false,
+              imageUrl: 'https://picsum.photos/seed/barsik-hunt/400/400',
+              title: 'Смешной кот'
+            },
+            {
+              id: 12,
+              type: 'photos',
+              icon: '📷',
+              name: 'IMG_2025_1012.jpg',
+              date: '12 октября 2025',
+              event: 'Крым',
+              people: 'Вся семья',
+              size: '3.5 МБ',
+              hasDescription: true,
+              isFavorite: true,
+              imageUrl: 'https://picsum.photos/seed/family-crimea-beach/400/400',
+              title: 'Семья на пляже в Крыму'
             },
           ];
+
+          // Filter media items based on selected filter
+          const getFilteredMedia = () => {
+            if (mediaFilter === 'all') {
+              return allMediaItems;
+            }
+            return allMediaItems.filter(item => item.type === mediaFilter);
+          };
+
+          const mediaItems = getFilteredMedia();
 
           return (
             <div className="flex h-screen bg-gray-50">
@@ -724,7 +891,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           <div>
                             <div className="flex items-center justify-between text-xs mb-1">
                               <span className="text-gray-600">Хранилище:</span>
-                              <span className="font-semibold text-gray-800">25%</span>
+                              <span className="font-semibold text-gray-800">{mediaStats.storageUsed} из {mediaStats.storageTotal} ГБ</span>
                             </div>
                             <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                               <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all" style={{width: '25%'}}></div>
@@ -1369,25 +1536,25 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                         {displayMode === 'grid' && (
                           <div className="space-y-4">
                             <div className="grid grid-cols-5 gap-4">
-                              {recentPhotos.map(photo => (
-                                <div key={photo.id} className="relative group">
+                              {mediaItems.map(item => (
+                                <div key={item.id} className="relative group">
                                   <div className="aspect-square bg-gradient-to-br from-purple-300 to-pink-300 rounded-xl flex items-center justify-center text-5xl cursor-pointer hover:scale-105 transition-all shadow-lg overflow-hidden">
-                                    {photo.imageUrl ? (
-                                      <img src={photo.imageUrl} alt={photo.title} className="w-full h-full object-cover" />
+                                    {item.imageUrl ? (
+                                      <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                                     ) : (
-                                      <span>{photo.emoji}</span>
+                                      <span>{item.icon}</span>
                                     )}
                                   </div>
                                   <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <input
                                       type="checkbox"
                                       className="w-5 h-5"
-                                      checked={selectedItems.includes(photo.id)}
+                                      checked={selectedItems.includes(item.id)}
                                       onChange={(e) => {
                                         if (e.target.checked) {
-                                          setSelectedItems([...selectedItems, photo.id]);
+                                          setSelectedItems([...selectedItems, item.id]);
                                         } else {
-                                          setSelectedItems(selectedItems.filter(id => id !== photo.id));
+                                          setSelectedItems(selectedItems.filter(id => id !== item.id));
                                         }
                                       }}
                                     />
@@ -1396,6 +1563,9 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                     <button className="bg-white px-3 py-1.5 rounded-lg text-sm font-medium">
                                       Просмотр
                                     </button>
+                                  </div>
+                                  <div className="mt-1 text-xs text-gray-600 text-center truncate px-1">
+                                    {item.title || item.name}
                                   </div>
                                 </div>
                               ))}
