@@ -1392,7 +1392,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       </div>
                     </>
                   ) : activeSection === 'media' ? (
-                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                    <>
                       {/* Media Header */}
                       <div className="bg-white border-b border-gray-200 px-6 py-4">
                         {/* Header with storage info */}
@@ -1605,7 +1605,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       )}
 
                       {/* Media Content with Sidebar */}
-                      <div className="flex-1 flex overflow-hidden">
+                      <div className="flex-1 flex overflow-hidden bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
                         {/* Main Content */}
                         <div className="flex-1 overflow-y-auto p-6">
                           {/* Smart Feed View */}
@@ -1812,9 +1812,9 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </>
                   ) : activeSection === 'artifacts' ? (
-                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                    <>
                       {/* Artifacts Header */}
                       <div className="bg-white border-b border-gray-200 px-6 py-4">
                         <div>
@@ -1824,7 +1824,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       </div>
 
                       {/* Artifacts Content */}
-                      <div className="flex-1 overflow-y-auto p-6">
+                      <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
                         <div className="max-w-6xl mx-auto space-y-8">
                           {/* Active Artifact */}
                           <div>
@@ -2134,9 +2134,9 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </>
                   ) : activeSection === 'photo-greeting' ? (
-                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                    <>
                       {/* Photo Greeting Header */}
                       <div className="bg-white border-b border-gray-200 px-6 py-4">
                         <div className="flex items-center justify-between">
@@ -2155,7 +2155,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       </div>
 
                       {/* Photo Greeting Content */}
-                      <div className="flex-1 overflow-hidden">
+                      <div className="flex-1 overflow-hidden bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
                         {!showGreetingEditor ? (
                           <div className="flex-1 overflow-y-auto p-6 h-full">
                           <div className="max-w-4xl mx-auto space-y-6">
@@ -2419,9 +2419,9 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           </div>
                         )}
                       </div>
-                    </div>
+                    </>
                   ) : activeSection === 'capsule' ? (
-                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                    <>
                       {/* Capsule Header */}
                       <div className="bg-white border-b border-gray-200 px-6 py-4">
                         <div className="flex items-center justify-between">
@@ -2438,7 +2438,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       </div>
 
                       {/* Capsule Content */}
-                      <div className="flex-1 overflow-y-auto p-6">
+                      <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
                         <div className="max-w-6xl mx-auto space-y-6">
                           {/* Meta Information */}
                           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -2730,9 +2730,9 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </>
                   ) : activeSection === 'settings' ? (
-                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                    <>
                       {/* Settings Header */}
                       <div className="bg-white border-b border-gray-200 px-6 py-4">
                         <div>
@@ -2742,7 +2742,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       </div>
 
                       {/* Settings Content */}
-                      <div className="flex-1 overflow-y-auto p-6">
+                      <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
                         <div className="max-w-4xl mx-auto space-y-6">
                           {/* Limits Section */}
                           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -2916,9 +2916,9 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </>
                   ) : activeSection === 'stats' ? (
-                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                    <>
                       {/* Stats Header */}
                       <div className="bg-white border-b border-gray-200 px-6 py-4">
                         <div>
@@ -2928,7 +2928,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       </div>
 
                       {/* Stats Content */}
-                      <div className="flex-1 overflow-y-auto p-6">
+                      <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
                         <div className="max-w-6xl mx-auto space-y-6">
                           {/* Key Metrics */}
                           <div className="grid grid-cols-4 gap-4">
@@ -3122,9 +3122,9 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </>
                   ) : activeSection === 'profile' ? (
-                    <div className="flex-1 flex flex-col bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
+                    <>
                       {/* Profile Header */}
                       <div className="bg-white border-b border-gray-200 px-6 py-4">
                         <div>
@@ -3134,7 +3134,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       </div>
 
                       {/* Profile Content */}
-                      <div className="flex-1 overflow-y-auto p-6">
+                      <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
                         <div className="max-w-4xl mx-auto space-y-6">
                           {/* Profile Avatar & Name */}
                           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -3325,7 +3325,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </>
                   ) : (
                     <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
                       <div className="text-center space-y-4">
