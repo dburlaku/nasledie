@@ -1610,7 +1610,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                         <div className="flex-1 overflow-y-auto p-6">
                           {/* Smart Feed View */}
                           {displayMode === 'smartFeed' && (
-                          <div className="space-y-6 max-w-4xl mx-auto">
+                          <div className="space-y-6">
                             {smartFeedData.map((period, idx) => (
                               <div key={idx} className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
                                 <div className="flex items-center justify-between mb-4">
@@ -1623,10 +1623,10 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                     )}
                                   </div>
                                 </div>
-                                <div className="grid grid-cols-3 gap-3 mb-4">
+                                <div className="grid grid-cols-6 gap-3 mb-4">
                                   {period.items.map((item) => (
                                     <div key={item.id} className="aspect-square bg-gradient-to-br from-purple-300 to-pink-300 rounded-lg flex items-center justify-center text-4xl cursor-pointer hover:scale-105 transition-all overflow-hidden">
-                                      {item.type === 'photo' && item.imageUrl ? (
+                                      {item.imageUrl ? (
                                         <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                                       ) : (
                                         <span>{item.emoji}</span>
@@ -1663,7 +1663,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                         {/* Grid View */}
                         {displayMode === 'grid' && (
                           <div className="space-y-4">
-                            <div className="grid grid-cols-5 gap-4">
+                            <div className="grid grid-cols-6 gap-4">
                               {mediaItems.map(item => (
                                 <div key={item.id} className="relative group">
                                   <div className="aspect-square bg-gradient-to-br from-purple-300 to-pink-300 rounded-xl flex items-center justify-center text-5xl cursor-pointer hover:scale-105 transition-all shadow-lg overflow-hidden">
@@ -1703,7 +1703,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
 
                         {/* List View */}
                         {displayMode === 'list' && (
-                          <div className="space-y-2 max-w-4xl mx-auto">
+                          <div className="space-y-2">
                             {mediaItems.map((item) => (
                               <div key={item.id} className="bg-white rounded-lg p-4 border border-gray-200 hover:shadow-md transition-all">
                                 <div className="flex items-center gap-4">
