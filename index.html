@@ -438,31 +438,43 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
             setIsProcessingPhotos(true);
             setStoryStep('processing');
 
-            addStoryMessage('nadi', 'Отлично! Начинаю обработку ваших фотографий...');
+            // Find first unprocessed photo (photo without aiDescription)
+            const firstUnprocessedIndex = storyPhotos.findIndex(photo => !photo.aiDescription);
+            const startIndex = firstUnprocessedIndex !== -1 ? firstUnprocessedIndex : 0;
+            const isReprocessing = firstUnprocessedIndex !== -1 && firstUnprocessedIndex > 0;
+
+            addStoryMessage('nadi', isReprocessing ? 'Отлично! Начинаю обработку новых фотографий...' : 'Отлично! Начинаю обработку ваших фотографий...');
 
             // Simulate AI processing
             setTimeout(() => {
-              // Generate AI descriptions for each photo
-              const processedPhotos = storyPhotos.map((photo, index) => ({
-                ...photo,
-                aiDescription: `На этой фотографии я вижу ${['красивый пейзаж с людьми на природе', 'празднование важного события', 'семейный момент, полный радости', 'путешествие в интересное место'][Math.floor(Math.random() * 4)]}.`,
-                aiEntities: [
-                  ['природа', 'люди', 'радость'],
-                  ['праздник', 'семья', 'торжество'],
-                  ['дом', 'близкие', 'уют'],
-                  ['путешествие', 'приключение', 'впечатления']
-                ][Math.floor(Math.random() * 4)],
-                shortSpeech: `Фото ${index + 1}: ${['Тёплый семейный момент', 'Незабываемое событие', 'Особенный день', 'Яркое впечатление'][Math.floor(Math.random() * 4)]}`
-              }));
+              // Generate AI descriptions only for unprocessed photos
+              const processedPhotos = storyPhotos.map((photo, index) => {
+                if (photo.aiDescription) {
+                  // Already processed, keep as is
+                  return photo;
+                }
+                // Process new photo
+                return {
+                  ...photo,
+                  aiDescription: `На этой фотографии я вижу ${['красивый пейзаж с людьми на природе', 'празднование важного события', 'семейный момент, полный радости', 'путешествие в интересное место'][Math.floor(Math.random() * 4)]}.`,
+                  aiEntities: [
+                    ['природа', 'люди', 'радость'],
+                    ['праздник', 'семья', 'торжество'],
+                    ['дом', 'близкие', 'уют'],
+                    ['путешествие', 'приключение', 'впечатления']
+                  ][Math.floor(Math.random() * 4)],
+                  shortSpeech: `Фото ${index + 1}: ${['Тёплый семейный момент', 'Незабываемое событие', 'Особенный день', 'Яркое впечатление'][Math.floor(Math.random() * 4)]}`
+                };
+              });
 
               setStoryPhotos(processedPhotos);
               setIsProcessingPhotos(false);
               setStoryStep('chatting');
-              setCurrentStoryPhotoIndex(0);
+              setCurrentStoryPhotoIndex(startIndex);
 
-              addStoryMessage('nadi', 'Готово! Я обработал все фотографии и присвоил каждой ID 🎯');
+              addStoryMessage('nadi', isReprocessing ? 'Готово! Я обработал новые фотографии 🎯' : 'Готово! Я обработал все фотографии и присвоил каждой ID 🎯');
               setTimeout(() => {
-                addStoryMessage('nadi', `${processedPhotos[0].shortSpeech}\n\n${processedPhotos[0].aiDescription}`);
+                addStoryMessage('nadi', `${processedPhotos[startIndex].shortSpeech}\n\n${processedPhotos[startIndex].aiDescription}`);
                 setTimeout(() => {
                   addStoryMessage('nadi', 'Давайте начнем с первой фотографии, а если хотите рассказать о них всех сразу как о коллекции, просто скажите мне об этом.\n\nРасскажите, пожалуйста:\n\n📅 Когда это было?\n📍 Где это происходило?\n👥 Кто на фотографии?\n🎬 Что делали?\n🌟 При каких обстоятельствах?\n⏮️ Что было до?\n⏭️ Что было после?');
                 }, 2000);
@@ -489,21 +501,18 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
 
               addStoryMessage('nadi', 'Спасибо за историю! Я сохранил всё в Твои истории 💾');
 
-              // Move to next photo or finish
+              // Ask if user wants to move to next photo
               if (currentStoryPhotoIndex < storyPhotos.length - 1) {
                 setTimeout(() => {
-                  const nextIndex = currentStoryPhotoIndex + 1;
-                  setCurrentStoryPhotoIndex(nextIndex);
-                  const nextPhoto = storyPhotos[nextIndex];
-                  addStoryMessage('nadi', `Переходим к следующей фотографии!\n\n${nextPhoto.shortSpeech}\n\n${nextPhoto.aiDescription}\n\nРасскажите историю об этой фотографии:`);
+                  addStoryMessage('nadi', 'Хотите перейти к следующей фотографии?');
+                  setStoryStep('waiting_next');
                 }, 1500);
               } else {
                 // All photos processed
                 setTimeout(() => {
                   addStoryMessage('nadi', 'Отлично! Все фотографии описаны! 🎉\n\nТеперь давайте посмотрим на результат. Я создал описания, объединив то, что я увидел на фотографиях и ваши истории.');
                   setTimeout(() => {
-                    setStoryStep('reviewing');
-                    setShowStoryReview(true);
+                    setStoryStep('completed');
                     // Generate final descriptions
                     const finalPhotos = storyPhotos.map((photo, index) => ({
                       ...photo,
@@ -516,6 +525,19 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                 }, 1500);
               }
             }, 1000);
+          };
+
+          const handleMoveToNextPhoto = () => {
+            const nextIndex = currentStoryPhotoIndex + 1;
+            setCurrentStoryPhotoIndex(nextIndex);
+            const nextPhoto = storyPhotos[nextIndex];
+            addStoryMessage('nadi', `Переходим к следующей фотографии!\n\n${nextPhoto.shortSpeech}\n\n${nextPhoto.aiDescription}\n\nРасскажите историю об этой фотографии:`);
+            setStoryStep('chatting');
+          };
+
+          const handleContinueEditing = () => {
+            addStoryMessage('nadi', 'Хорошо, продолжайте редактировать текущую историю. Что ещё хотите добавить?');
+            setStoryStep('chatting');
           };
 
           const handleStoryKeyPress = (e) => {
@@ -2751,6 +2773,26 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                   )}
                                 </div>
                               </div>
+
+                              {/* Waiting for next photo response */}
+                              {storyStep === 'waiting_next' && (
+                                <div className="border-t border-gray-200 bg-white p-4">
+                                  <div className="max-w-3xl mx-auto flex gap-3">
+                                    <button
+                                      onClick={handleMoveToNextPhoto}
+                                      className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-xl font-medium hover:shadow-xl transition-all"
+                                    >
+                                      ✅ Да, перейти к следующей
+                                    </button>
+                                    <button
+                                      onClick={handleContinueEditing}
+                                      className="flex-1 bg-white border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-50 transition-all"
+                                    >
+                                      ✏️ Продолжить редактировать
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
 
                               {/* Chat Input */}
                               {(storyStep === 'chatting' || storyStep === 'intro' || storyStep === 'uploading') && (
