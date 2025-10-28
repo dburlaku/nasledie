@@ -1360,7 +1360,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               onClick={() => setActiveSection('chat')}
                               className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl px-12 py-5 rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
                             >
-                              Начать разговор с Nadi
+                              Начать новый диалог
                             </button>
                           </div>
 
@@ -1483,7 +1483,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 onClick={() => setActiveSection('chat')}
                                 className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl px-12 py-4 rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 mb-8"
                               >
-                                Начать с Nadi
+                                Начать новый диалог
                               </button>
                               <div className="flex justify-center gap-8 text-gray-600">
                                 <button
@@ -1529,9 +1529,102 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               <h2 className="text-3xl font-bold text-gray-800 mb-2">
                                 Привет, Александр!
                               </h2>
-                              <p className="text-gray-600 text-lg">
+                              <p className="text-gray-600 text-lg mb-8">
                                 Продолжим наш разговор? Расскажите мне о том, что для вас важно
                               </p>
+
+                              {/* Динамические чипсы */}
+                              <div className="flex flex-wrap gap-3 justify-center max-w-2xl mx-auto">
+                                {storyPhotos.length > 0 ? (
+                                  <>
+                                    {/* Если пользователь недавно загружал фото */}
+                                    <button
+                                      onClick={handleOpenPhotoStory}
+                                      className="bg-white hover:bg-purple-50 border-2 border-purple-200 text-gray-800 px-5 py-3 rounded-full font-medium transition-all hover:scale-105 hover:shadow-lg flex items-center gap-2"
+                                    >
+                                      <span>📸</span>
+                                      <span>Продолжить описывать фото</span>
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setStep(10);
+                                        addMessage('nadi', 'О чём хотите рассказать?');
+                                      }}
+                                      className="bg-white hover:bg-pink-50 border-2 border-pink-200 text-gray-800 px-5 py-3 rounded-full font-medium transition-all hover:scale-105 hover:shadow-lg flex items-center gap-2"
+                                    >
+                                      <span>💭</span>
+                                      <span>Записать новое</span>
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setActiveSection('artifacts');
+                                        addMessage('system', 'Переход в раздел AI Креатора...');
+                                      }}
+                                      className="bg-white hover:bg-green-50 border-2 border-green-200 text-gray-800 px-5 py-3 rounded-full font-medium transition-all hover:scale-105 hover:shadow-lg flex items-center gap-2"
+                                    >
+                                      <span>🌳</span>
+                                      <span>Добавить в древо</span>
+                                    </button>
+                                  </>
+                                ) : artifacts.length > 0 ? (
+                                  <>
+                                    {/* Если есть незавершённые истории */}
+                                    {artifacts.slice(0, 2).map((artifact) => (
+                                      <button
+                                        key={artifact.id}
+                                        onClick={() => {
+                                          setActiveSection('artifacts');
+                                        }}
+                                        className="bg-white hover:bg-blue-50 border-2 border-blue-200 text-gray-800 px-5 py-3 rounded-full font-medium transition-all hover:scale-105 hover:shadow-lg flex items-center gap-2"
+                                      >
+                                        <span>📖</span>
+                                        <span>"{artifact.title}"</span>
+                                      </button>
+                                    ))}
+                                    <button
+                                      onClick={() => {
+                                        setStep(10);
+                                        addMessage('nadi', 'Начнём новую историю! О чём расскажете?');
+                                      }}
+                                      className="bg-white hover:bg-purple-50 border-2 border-purple-200 text-gray-800 px-5 py-3 rounded-full font-medium transition-all hover:scale-105 hover:shadow-lg flex items-center gap-2"
+                                    >
+                                      <span>✨</span>
+                                      <span>Новая история</span>
+                                    </button>
+                                  </>
+                                ) : (
+                                  <>
+                                    {/* Если давно не заходил / первый визит */}
+                                    <button
+                                      onClick={() => {
+                                        setStep(10);
+                                        addMessage('nadi', 'Замечательно! Расскажите, что важного произошло в вашей жизни? Может быть, какое-то особенное воспоминание?');
+                                      }}
+                                      className="bg-white hover:bg-red-50 border-2 border-red-200 text-gray-800 px-5 py-3 rounded-full font-medium transition-all hover:scale-105 hover:shadow-lg flex items-center gap-2"
+                                    >
+                                      <span>❤️</span>
+                                      <span>Вспомнить важное</span>
+                                    </button>
+                                    <button
+                                      onClick={handleOpenPhotoStory}
+                                      className="bg-white hover:bg-blue-50 border-2 border-blue-200 text-gray-800 px-5 py-3 rounded-full font-medium transition-all hover:scale-105 hover:shadow-lg flex items-center gap-2"
+                                    >
+                                      <span>📸</span>
+                                      <span>Разобрать фото</span>
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setStep(10);
+                                        addMessage('nadi', 'Отлично! Я готова записать ваш голос. Расскажите о том, что хотите сохранить для потомков.');
+                                      }}
+                                      className="bg-white hover:bg-green-50 border-2 border-green-200 text-gray-800 px-5 py-3 rounded-full font-medium transition-all hover:scale-105 hover:shadow-lg flex items-center gap-2"
+                                    >
+                                      <span>🎙️</span>
+                                      <span>Записать голос</span>
+                                    </button>
+                                  </>
+                                )}
+                              </div>
                             </div>
                           </div>
                         )}
