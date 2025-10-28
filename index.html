@@ -1338,219 +1338,172 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                   <div className="flex-1 flex flex-col">
                     {activeSection === 'home' ? (
                     <>
-                      <div className="bg-white border-b border-gray-200 px-6 py-4">
-                        <div>
-                          <h2 className="text-2xl font-bold text-gray-800">Добро пожаловать в Nadi</h2>
-                          <p className="text-sm text-gray-500 mt-1">Помощник памяти — сохраните ваши воспоминания навсегда</p>
-                        </div>
-                      </div>
+                      {/* No header - clean start */}
+                      <div className="flex-1 overflow-y-auto bg-white">
+                        <div className="max-w-5xl mx-auto">
 
-                      <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-purple-50/30 via-pink-50/30 to-blue-50/30">
-                        <div className="max-w-6xl mx-auto space-y-8">
-                          {/* Hero Section */}
-                          <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-8 text-white shadow-xl">
-                            <h1 className="text-3xl font-bold mb-3">Сохраните историю вашей семьи</h1>
-                            <p className="text-lg opacity-90 mb-6">Nadi поможет вам создать вечную память о самых важных моментах жизни</p>
+                          {/* Hero Section - Много воздуха */}
+                          <div className="text-center py-24 px-6">
+                            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
+                              Твой голос. Твои воспоминания.<br/>
+                              Твой взгляд на мир.
+                            </h1>
+                            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-4">
+                              Nadi помогает сохранить это через простой разговор —<br/>
+                              создавай истории, делись с близкими сегодня<br/>
+                              и передай это поколениям завтра.
+                            </p>
+                            <p className="text-2xl font-semibold text-gray-800 mb-12">
+                              Удовольствие сегодня. Наследие на века.
+                            </p>
                             <button
                               onClick={() => setActiveSection('chat')}
-                              className="bg-white text-purple-600 px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
+                              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl px-12 py-5 rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
                             >
-                              Начать диалог с Nadi
+                              Начать разговор с Nadi
                             </button>
                           </div>
 
-                          {/* Services Grid */}
-                          <div>
-                            {/* Категория: Основные сервисы */}
-                            <div className="mb-12">
-                              <h4 className="text-2xl font-bold text-gray-800 mb-6">
-                                Основные сервисы
-                              </h4>
-                              <div className="grid grid-cols-2 gap-6 max-w-4xl">
-                                <div
-                                  onClick={handleOpenPhotoStory}
-                                  className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all cursor-pointer border-2 border-blue-200 relative"
-                                >
-                                  <div className="absolute top-4 right-4 bg-green-500 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow-lg">
-                                    Активно
-                                  </div>
-                                  <div className="text-5xl mb-4">📸</div>
-                                  <h5 className="font-bold text-xl text-gray-800 mb-3">ФотоИстории</h5>
-                                  <p className="text-base text-gray-700">Опишите свои фотографии и создайте живые истории</p>
+                          {/* Как это работает - 3 шага */}
+                          <div className="bg-gradient-to-br from-purple-50/50 to-pink-50/50 py-20 px-6">
+                            <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
+                              Как это работает
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-4xl mx-auto">
+                              <div className="text-center">
+                                <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg">
+                                  💬
                                 </div>
-                                <div
-                                  onClick={handleOpenPhotoGreeting}
-                                  className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all cursor-pointer border-2 border-purple-200 relative"
-                                >
-                                  <div className="absolute top-4 right-4 bg-green-500 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow-lg">
-                                    Активно
-                                  </div>
-                                  <div className="text-5xl mb-4">🎉</div>
-                                  <h5 className="font-bold text-xl text-gray-800 mb-3">Фотопоздравление</h5>
-                                  <p className="text-base text-gray-700">Создайте праздничное поздравление с фотографиями</p>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">1. Рассказывай</h3>
+                                <p className="text-gray-600 text-lg">
+                                  Просто говори<br/>
+                                  с Nadi о том,<br/>
+                                  что помнишь
+                                </p>
+                              </div>
+                              <div className="text-center">
+                                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg">
+                                  ✨
+                                </div>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">2. Создавай</h3>
+                                <p className="text-gray-600 text-lg">
+                                  Альбомы, видео,<br/>
+                                  древо, коллажи —<br/>
+                                  здесь и сейчас
+                                </p>
+                              </div>
+                              <div className="text-center">
+                                <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg">
+                                  🌟
+                                </div>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">3. Передавай</h3>
+                                <p className="text-gray-600 text-lg">
+                                  Детям, внукам,<br/>
+                                  через 10, 100,<br/>
+                                  1000 лет
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Что можно создать */}
+                          <div className="py-20 px-6">
+                            <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
+                              Что можно создать
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12">
+                              <div
+                                onClick={handleOpenPhotoStory}
+                                className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all cursor-pointer border-2 border-blue-200 text-center"
+                              >
+                                <div className="text-6xl mb-4">📸</div>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">ФотоИстории</h3>
+                                <p className="text-gray-700">
+                                  Оживи фотографии<br/>
+                                  через рассказ
+                                </p>
+                              </div>
+                              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all cursor-pointer border-2 border-green-200 text-center opacity-60">
+                                <div className="text-6xl mb-4">🌳</div>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Семейное древо</h3>
+                                <p className="text-gray-700">
+                                  Создай связь<br/>
+                                  поколений
+                                </p>
+                                <div className="mt-4 inline-block bg-gray-800 text-white text-sm px-3 py-1 rounded-full">
+                                  Скоро
+                                </div>
+                              </div>
+                              <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all cursor-pointer border-2 border-pink-200 text-center opacity-60">
+                                <div className="text-6xl mb-4">💌</div>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Письмо в будущее</h3>
+                                <p className="text-gray-700">
+                                  Напиши<br/>
+                                  потомкам
+                                </p>
+                                <div className="mt-4 inline-block bg-gray-800 text-white text-sm px-3 py-1 rounded-full">
+                                  Скоро
                                 </div>
                               </div>
                             </div>
+                            <div className="text-center">
+                              <button
+                                onClick={() => setActiveSection('artifacts')}
+                                className="text-purple-600 font-semibold text-lg hover:text-purple-700 transition-colors inline-flex items-center gap-2"
+                              >
+                                <span>Посмотреть все возможности</span>
+                                <span>→</span>
+                              </button>
+                            </div>
+                          </div>
 
-                            {/* Категория: Дополнительные сервисы */}
-                            <div className="mb-12">
-                              <h4 className="text-2xl font-bold text-gray-800 mb-6">
-                                Дополнительные сервисы (скоро)
-                              </h4>
-                              <div className="grid grid-cols-2 gap-6">
-                                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 shadow-lg opacity-60 border-2 border-gray-200 relative">
-                                  <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] rounded-2xl flex items-center justify-center">
-                                    <div className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium">Скоро</div>
+                          {/* Социальное доказательство */}
+                          <div className="bg-gradient-to-br from-purple-50/50 to-pink-50/50 py-20 px-6">
+                            <div className="max-w-3xl mx-auto">
+                              <div className="bg-white rounded-2xl p-10 shadow-xl border-2 border-purple-100">
+                                <div className="flex items-start gap-4">
+                                  <div className="text-5xl">💜</div>
+                                  <div>
+                                    <p className="text-xl text-gray-700 italic mb-4 leading-relaxed">
+                                      "Я наконец-то разобрала фото бабушки. Nadi помогла структурировать 50 лет истории за неделю"
+                                    </p>
+                                    <p className="text-gray-600 font-semibold">
+                                      — Мария, 34 года
+                                    </p>
                                   </div>
-                                  <div className="text-5xl mb-4">🎙️</div>
-                                  <h5 className="font-bold text-xl text-gray-800 mb-3">Интервью с бабушкой/дедушкой</h5>
-                                  <p className="text-base text-gray-700">Интервью через Nadi. AI структурирует рассказ в биографию</p>
-                                </div>
-                                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 shadow-lg opacity-60 border-2 border-gray-200 relative">
-                                  <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] rounded-2xl flex items-center justify-center">
-                                    <div className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium">Скоро</div>
-                                  </div>
-                                  <div className="text-5xl mb-4">🌳</div>
-                                  <h5 className="font-bold text-xl text-gray-800 mb-3">Семейное древо</h5>
-                                  <p className="text-base text-gray-700">Интерактивное создание генеалогии с привязкой фото и историй к персонам</p>
-                                </div>
-                                <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-8 shadow-lg opacity-60 border-2 border-gray-200 relative">
-                                  <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] rounded-2xl flex items-center justify-center">
-                                    <div className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium">Скоро</div>
-                                  </div>
-                                  <div className="text-5xl mb-4">💌</div>
-                                  <h5 className="font-bold text-xl text-gray-800 mb-3">Письмо в будущее</h5>
-                                  <p className="text-base text-gray-700">Создание послания себе/детям/внукам на 5/10/20 лет вперед</p>
-                                </div>
-                                <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-8 shadow-lg opacity-60 border-2 border-gray-200 relative">
-                                  <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] rounded-2xl flex items-center justify-center">
-                                    <div className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium">Скоро</div>
-                                  </div>
-                                  <div className="text-5xl mb-4">📝</div>
-                                  <h5 className="font-bold text-xl text-gray-800 mb-3">Воспоминание дня</h5>
-                                  <p className="text-base text-gray-700">Ежедневный микро-диалог с Nadi: "Что важного произошло сегодня?"</p>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Категория: Обработка контента */}
-                            <div className="mb-8">
-                              <h4 className="text-lg font-semibold text-gray-700 mb-4">
-                                Обработка контента
-                              </h4>
-                              <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">📄</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Оцифровка семейного архива</h5>
-                                  <p className="text-sm text-gray-600">Фото, документы, письма с OCR-распознаванием рукописного текста</p>
-                                </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🖼️</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Восстановление старых фото</h5>
-                                  <p className="text-sm text-gray-600">AI-реставрация поврежденных фото и колоризация черно-белых снимков</p>
-                                </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🎬</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Видео-капсула</h5>
-                                  <p className="text-sm text-gray-600">Запись видео-обращения к потомкам с автоматическими субтитрами</p>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Категория: Эмоциональные сервисы */}
-                            <div className="mb-8">
-                              <h4 className="text-lg font-semibold text-gray-700 mb-4">
-                                Эмоциональные сервисы
-                              </h4>
-                              <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🗺️</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Карта жизни</h5>
-                                  <p className="text-sm text-gray-600">Интерактивная карта всех мест с привязкой фото и историй</p>
-                                </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">📜</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Наследие ценностей</h5>
-                                  <p className="text-sm text-gray-600">Запись жизненных принципов и формирование "семейного кодекса"</p>
-                                </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🕊️</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Незаконченная история</h5>
-                                  <p className="text-sm text-gray-600">Помощь в сборе истории ушедшего близкого человека из воспоминаний других</p>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Категория: Практические сервисы */}
-                            <div className="mb-8">
-                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                                <span className="text-2xl">🛠️</span>
-                                <span>Практические сервисы</span>
-                              </h4>
-                              <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🏥</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Медицинская история семьи</h5>
-                                  <p className="text-sm text-gray-600">Структурированный сбор информации о наследственных заболеваниях</p>
-                                </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🍳</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Рецепты семьи</h5>
-                                  <p className="text-sm text-gray-600">Фото блюд + рецепты + истории. Кулинарное наследие поколений</p>
-                                </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🎊</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Семейные традиции</h5>
-                                  <p className="text-sm text-gray-600">Документирование ритуалов и передача культурного кода</p>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Категория: Социальные сервисы */}
-                            <div className="mb-8">
-                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                                <span className="text-2xl">👥</span>
-                                <span>Социальные сервисы</span>
-                              </h4>
-                              <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">📔</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Общий альбом</h5>
-                                  <p className="text-sm text-gray-600">Совместное создание семейной капсулы с множественными точками зрения</p>
-                                </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🔍</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Найди потерянные связи</h5>
-                                  <p className="text-sm text-gray-600">AI ищет фото с одинаковыми людьми/местами и восстанавливает контекст</p>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Категория: Креативные сервисы */}
-                            <div className="mb-8">
-                              <h4 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                                <span className="text-2xl">🎨</span>
-                                <span>Креативные сервисы</span>
-                              </h4>
-                              <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">📖</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Фотокнига за 5 минут</h5>
-                                  <p className="text-sm text-gray-600">Автоматическая компоновка лучших фото с AI-дизайном и версткой</p>
-                                </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🎞️</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Анимированные воспоминания</h5>
-                                  <p className="text-sm text-gray-600">Превращение серии фото в видео с эффектами и музыкой</p>
-                                </div>
-                                <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-200">
-                                  <div className="text-4xl mb-3">🎙️</div>
-                                  <h5 className="font-bold text-gray-800 mb-2">Голосовое наследие</h5>
-                                  <p className="text-sm text-gray-600">Запись важных фраз голосом близкого человека для будущих поколений</p>
                                 </div>
                               </div>
                             </div>
                           </div>
+
+                          {/* Футер */}
+                          <div className="bg-gray-50 py-12 px-6 text-center border-t border-gray-200">
+                            <div className="max-w-4xl mx-auto">
+                              <button
+                                onClick={() => setActiveSection('chat')}
+                                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl px-12 py-4 rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 mb-8"
+                              >
+                                Начать с Nadi
+                              </button>
+                              <div className="flex justify-center gap-8 text-gray-600">
+                                <button
+                                  onClick={() => setActiveSection('artifacts')}
+                                  className="hover:text-purple-600 transition-colors"
+                                >
+                                  Все возможности
+                                </button>
+                                <span className="text-gray-300">|</span>
+                                <button className="hover:text-purple-600 transition-colors">
+                                  О проекте
+                                </button>
+                                <span className="text-gray-300">|</span>
+                                <button className="hover:text-purple-600 transition-colors">
+                                  Контакты
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
                         </div>
                       </div>
                     </>
@@ -1570,14 +1523,14 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                         {messages.length === 0 && step === 0 && (
                           <div className="text-center py-20 space-y-6">
                             <div className="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full mx-auto flex items-center justify-center animate-pulse">
-                              <span className="text-5xl">❤️</span>
+                              <span className="text-5xl">👋</span>
                             </div>
                             <div>
                               <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                                Сохрани то, что важно
+                                Привет, Александр!
                               </h2>
                               <p className="text-gray-600 text-lg">
-                                Превращаем фотографии в живые истории
+                                Продолжим наш разговор? Расскажите мне о том, что для вас важно
                               </p>
                             </div>
                           </div>
@@ -2446,7 +2399,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               className="text-purple-600 hover:text-purple-700 mb-2 flex items-center gap-2"
                             >
                               <span>←</span>
-                              <span>Назад к артефактам</span>
+                              <span>Назад к AI Креатору</span>
                             </button>
                             <h2 className="text-2xl font-bold text-gray-800">Создание фотопоздравления</h2>
                             <p className="text-sm text-gray-500 mt-1">Загрузите фото, выберите тему и стиль для создания уникального поздравления</p>
@@ -2731,7 +2684,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               className="text-blue-600 hover:text-blue-700 mb-2 flex items-center gap-2"
                             >
                               <span>←</span>
-                              <span>Назад к артефактам</span>
+                              <span>Назад к AI Креатору</span>
                             </button>
                             <h2 className="text-2xl font-bold text-gray-800">ФотоИстории</h2>
                             <p className="text-sm text-gray-500 mt-1">Создайте живые истории из ваших фотографий</p>
