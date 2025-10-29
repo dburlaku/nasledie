@@ -407,13 +407,17 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               // User-provided data
               date: '',
               place: '',
-              people: '',
+              people: [],
+              peopleOnPhoto: [], // AI-detected people
+              objects: [], // AI-detected objects
               event: '',
               story: '',
+              userStory: '', // Raw user input
               // Final metadata
               title: '',
               finalDescription: '',
               tags: [],
+              suggestedTags: ['память', 'история', 'момент'], // AI-suggested tags
               // EXIF data (simulated)
               exif: {
                 camera: ['iPhone 14 Pro', 'Canon EOS R5', 'Sony A7 III', 'Nikon Z6'][Math.floor(Math.random() * 4)],
@@ -508,30 +512,57 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
 
             // Simulate AI processing the answer
             setTimeout(() => {
-              // Update photo(s) with user's story
+              // Update photo(s) with user's story - сохраняем сырые ответы пользователя
               const updatedPhotos = [...storyPhotos];
+
+              // Массив ненавязчивых вопросов для интервью
+              const interviewQuestions = [
+                'Интересно! А кто был с вами в этот момент?',
+                'Расскажите, что произошло до того, как был сделан этот снимок?',
+                'Какие эмоции вы испытывали тогда?',
+                'Есть ли какая-то особенная деталь на фото, которая вам дорога?',
+                'Что случилось после этого момента?',
+                'Помните ли вы, о чём вы думали в тот момент?',
+                'Было ли что-то необычное или неожиданное в тот день?',
+                'С кем бы вы хотели поделиться этим воспоминанием?',
+                'Что вы чувствуете, глядя на это фото сейчас?',
+                'Есть ли звуки или запахи, которые вы помните из того момента?',
+                'Что бы вы сказали себе в прошлом, глядя на это фото?',
+                'Как это событие повлияло на вашу жизнь?'
+              ];
+
+              // Выбираем случайный вопрос
+              const randomQuestion = interviewQuestions[Math.floor(Math.random() * interviewQuestions.length)];
 
               // Если выбрано несколько фотографий, обновляем все
               if (selectedPhotoIds.length > 0) {
                 selectedPhotoIds.forEach(photoId => {
                   const photoIndex = updatedPhotos.findIndex(p => p.id === photoId);
                   if (photoIndex !== -1) {
-                    updatedPhotos[photoIndex].story =
-                      (updatedPhotos[photoIndex].story || updatedPhotos[photoIndex].aiDescription || '') + ' ' + userMessage;
-                    updatedPhotos[photoIndex].finalDescription = updatedPhotos[photoIndex].story;
+                    // Добавляем сырой текст к userStory
+                    updatedPhotos[photoIndex].userStory =
+                      (updatedPhotos[photoIndex].userStory || '') + ' ' + userMessage;
+
+                    // Генерируем описание AI на основе всех ответов
+                    updatedPhotos[photoIndex].finalDescription =
+                      `${updatedPhotos[photoIndex].aiDescription} ${updatedPhotos[photoIndex].userStory}`.trim();
                   }
                 });
                 setStoryPhotos(updatedPhotos);
-                addStoryMessage('nadi', `Спасибо! Я добавил эту информацию к ${selectedPhotoIds.length} фотографиям 💾`);
+                addStoryMessage('nadi', `Понятно. ${randomQuestion}`);
               } else {
                 // Иначе обновляем только текущую фотографию
                 if (updatedPhotos[currentStoryPhotoIndex]) {
-                  updatedPhotos[currentStoryPhotoIndex].story =
-                    (updatedPhotos[currentStoryPhotoIndex].story || updatedPhotos[currentStoryPhotoIndex].aiDescription || '') + ' ' + userMessage;
-                  updatedPhotos[currentStoryPhotoIndex].finalDescription = updatedPhotos[currentStoryPhotoIndex].story;
+                  updatedPhotos[currentStoryPhotoIndex].userStory =
+                    (updatedPhotos[currentStoryPhotoIndex].userStory || '') + ' ' + userMessage;
+
+                  // Генерируем описание AI на основе всех ответов
+                  updatedPhotos[currentStoryPhotoIndex].finalDescription =
+                    `${updatedPhotos[currentStoryPhotoIndex].aiDescription} ${updatedPhotos[currentStoryPhotoIndex].userStory}`.trim();
+
                   setStoryPhotos(updatedPhotos);
                 }
-                addStoryMessage('nadi', 'Спасибо за дополнение! Я обновил описание фотографии 💾');
+                addStoryMessage('nadi', randomQuestion);
               }
             }, 1000);
           };
@@ -2966,7 +2997,23 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           {/* Action buttons in top-right corner */}
                           <div className="flex items-center gap-3">
                             <button
-                              onClick={handleDownloadPhotoWithDescription}
+                              onClick={() => {
+                                if (storyPhotos.length > 1) {
+                                  const choice = confirm('Скачать все фотографии или только выбранную?\n\nНажмите OK для всех фото, Отмена - только выбранная');
+                                  if (choice) {
+                                    // Download all photos
+                                    storyPhotos.forEach(photo => {
+                                      // Simulate download for each
+                                      console.log('Downloading', photo.id);
+                                    });
+                                    alert('Все фотографии скачаны!');
+                                  } else {
+                                    handleDownloadPhotoWithDescription();
+                                  }
+                                } else {
+                                  handleDownloadPhotoWithDescription();
+                                }
+                              }}
                               disabled={!selectedStoryPhoto}
                               className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
@@ -2975,16 +3022,36 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                             </button>
                             <button
                               onClick={() => {
-                                if (navigator.share && selectedStoryPhoto) {
-                                  navigator.share({
-                                    title: 'Моя ФотоИстория',
-                                    text: 'Посмотрите на мою фотоисторию, созданную с помощью NaDi!',
-                                    url: window.location.href
-                                  });
-                                } else if (!selectedStoryPhoto) {
+                                if (!selectedStoryPhoto) {
                                   alert('Пожалуйста, выберите фотографию');
+                                  return;
+                                }
+
+                                if (storyPhotos.length > 1) {
+                                  const choice = confirm('Поделиться всеми фотографиями или только выбранной?\n\nНажмите OK для всех фото, Отмена - только выбранная');
+                                  const shareText = choice
+                                    ? `Посмотрите на мои ${storyPhotos.length} фотоистории, созданные с помощью NaDi!`
+                                    : 'Посмотрите на мою фотоисторию, созданную с помощью NaDi!';
+
+                                  if (navigator.share) {
+                                    navigator.share({
+                                      title: choice ? 'Мои ФотоИстории' : 'Моя ФотоИстория',
+                                      text: shareText,
+                                      url: window.location.href
+                                    });
+                                  } else {
+                                    alert('Функция поделиться не поддерживается в вашем браузере');
+                                  }
                                 } else {
-                                  alert('Функция поделиться не поддерживается в вашем браузере');
+                                  if (navigator.share) {
+                                    navigator.share({
+                                      title: 'Моя ФотоИстория',
+                                      text: 'Посмотрите на мою фотоисторию, созданную с помощью NaDi!',
+                                      url: window.location.href
+                                    });
+                                  } else {
+                                    alert('Функция поделиться не поддерживается в вашем браузере');
+                                  }
                                 }
                               }}
                               disabled={!selectedStoryPhoto}
@@ -2994,7 +3061,20 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               <span>Поделиться</span>
                             </button>
                             <button
-                              onClick={() => window.open('https://dmitrijburlaku.nasledie.digital/gallery/', '_blank')}
+                              onClick={() => {
+                                if (storyPhotos.length > 1) {
+                                  const choice = confirm('Сохранить все фотографии или только выбранную?\n\nНажмите OK для всех фото, Отмена - только выбранная');
+                                  if (choice) {
+                                    alert(`Все ${storyPhotos.length} фотографий будут сохранены в капсулу!`);
+                                    window.open('https://dmitrijburlaku.nasledie.digital/gallery/', '_blank');
+                                  } else {
+                                    alert('Выбранная фотография будет сохранена в капсулу!');
+                                    window.open('https://dmitrijburlaku.nasledie.digital/gallery/', '_blank');
+                                  }
+                                } else {
+                                  window.open('https://dmitrijburlaku.nasledie.digital/gallery/', '_blank');
+                                }
+                              }}
                               disabled={!selectedStoryPhoto}
                               className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
@@ -3043,14 +3123,20 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               {/* Chat Input - Always Available */}
                               <div className="border-t border-gray-200 bg-white p-4">
                                 <div className="max-w-3xl mx-auto">
+                                  {/* Подсказка при начале ввода с выбранной фотографией */}
+                                  {selectedStoryPhoto && storyInput.length > 0 && storyInput.length < 5 && (
+                                    <div className="mb-2 bg-blue-50 border border-blue-200 rounded-lg p-2 text-sm text-blue-700">
+                                      💡 Сейчас речь будет о {selectedPhotoIds.length > 0 ? `${selectedPhotoIds.length} выбранных фотографиях` : 'выбранной фотографии'}
+                                    </div>
+                                  )}
                                   <div className="flex gap-3">
                                     <textarea
                                       value={storyInput}
                                       onChange={(e) => setStoryInput(e.target.value)}
                                       onKeyPress={handleStoryKeyPress}
                                       placeholder={
-                                        storyStep === 'chatting'
-                                          ? "Расскажите историю об этой фотографии..."
+                                        selectedStoryPhoto
+                                          ? `Расскажите об этой ${selectedPhotoIds.length > 0 ? 'фотографиях' : 'фотографии'}...`
                                           : "Задайте вопрос или напишите сообщение..."
                                       }
                                       className="flex-1 border border-gray-300 rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -3061,7 +3147,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                         onClick={handleStartVoiceRecording}
                                         disabled={isRecordingVoice || storyStep !== 'chatting'}
                                         className={`${isRecordingVoice ? 'bg-red-500 animate-pulse' : 'bg-gray-500 hover:bg-gray-600'} text-white px-4 py-2 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
-                                        title="Голосовой ввод"
+                                        title="Рассказать голосом"
                                       >
                                         <span className="text-xl">{isRecordingVoice ? '⏹️' : '🎤'}</span>
                                       </button>
@@ -3491,8 +3577,112 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 } text-white px-4 py-3 rounded-lg font-medium transition-all disabled:opacity-50`}
                               >
                                 <span className="text-xl">{isRecordingFullscreenVoice ? '⏹️' : '🎤'}</span>
-                                <span>{isRecordingFullscreenVoice ? 'Запись...' : 'Добавить голосом'}</span>
+                                <span>{isRecordingFullscreenVoice ? 'Запись...' : 'рассказать'}</span>
                               </button>
+
+                              {/* Additional metadata fields */}
+                              <div className="mb-4 space-y-3">
+                                {/* Tags */}
+                                <div>
+                                  <label className="text-sm font-semibold text-gray-700 block mb-2">Теги:</label>
+                                  <div className="flex flex-wrap gap-2 mb-2">
+                                    {storyPhotos[fullscreenPhotoIndex]?.suggestedTags?.map((tag, idx) => (
+                                      <button
+                                        key={idx}
+                                        onClick={() => {
+                                          const updatedPhotos = [...storyPhotos];
+                                          if (!updatedPhotos[fullscreenPhotoIndex].tags.includes(tag)) {
+                                            updatedPhotos[fullscreenPhotoIndex].tags = [...(updatedPhotos[fullscreenPhotoIndex].tags || []), tag];
+                                            setStoryPhotos(updatedPhotos);
+                                          }
+                                        }}
+                                        className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full hover:bg-blue-200 transition-colors"
+                                      >
+                                        + {tag}
+                                      </button>
+                                    ))}
+                                  </div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {storyPhotos[fullscreenPhotoIndex]?.tags?.map((tag, idx) => (
+                                      <span key={idx} className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full flex items-center gap-1">
+                                        {tag}
+                                        <button
+                                          onClick={() => {
+                                            const updatedPhotos = [...storyPhotos];
+                                            updatedPhotos[fullscreenPhotoIndex].tags = updatedPhotos[fullscreenPhotoIndex].tags.filter((_, i) => i !== idx);
+                                            setStoryPhotos(updatedPhotos);
+                                          }}
+                                          className="hover:text-red-600"
+                                        >
+                                          ×
+                                        </button>
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                {/* Date */}
+                                <div>
+                                  <label className="text-sm font-semibold text-gray-700 block mb-2">Дата:</label>
+                                  <input
+                                    type="text"
+                                    value={storyPhotos[fullscreenPhotoIndex]?.date || ''}
+                                    onChange={(e) => {
+                                      const updatedPhotos = [...storyPhotos];
+                                      updatedPhotos[fullscreenPhotoIndex].date = e.target.value;
+                                      setStoryPhotos(updatedPhotos);
+                                    }}
+                                    placeholder="Например: Август 2023"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  />
+                                </div>
+
+                                {/* Place */}
+                                <div>
+                                  <label className="text-sm font-semibold text-gray-700 block mb-2">Место:</label>
+                                  <input
+                                    type="text"
+                                    value={storyPhotos[fullscreenPhotoIndex]?.place || ''}
+                                    onChange={(e) => {
+                                      const updatedPhotos = [...storyPhotos];
+                                      updatedPhotos[fullscreenPhotoIndex].place = e.target.value;
+                                      setStoryPhotos(updatedPhotos);
+                                    }}
+                                    placeholder="Например: Париж, Эйфелева башня"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  />
+                                </div>
+
+                                {/* People */}
+                                <div>
+                                  <label className="text-sm font-semibold text-gray-700 block mb-2">Люди на фото:</label>
+                                  <input
+                                    type="text"
+                                    value={Array.isArray(storyPhotos[fullscreenPhotoIndex]?.people) ? storyPhotos[fullscreenPhotoIndex].people.join(', ') : storyPhotos[fullscreenPhotoIndex]?.people || ''}
+                                    onChange={(e) => {
+                                      const updatedPhotos = [...storyPhotos];
+                                      updatedPhotos[fullscreenPhotoIndex].people = e.target.value.split(',').map(p => p.trim()).filter(p => p);
+                                      setStoryPhotos(updatedPhotos);
+                                    }}
+                                    placeholder="Например: Мама, папа, я"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  />
+                                </div>
+
+                                {/* Objects */}
+                                {storyPhotos[fullscreenPhotoIndex]?.objects && storyPhotos[fullscreenPhotoIndex].objects.length > 0 && (
+                                  <div>
+                                    <label className="text-sm font-semibold text-gray-700 block mb-2">Объекты на фото:</label>
+                                    <div className="flex flex-wrap gap-2">
+                                      {storyPhotos[fullscreenPhotoIndex].objects.map((obj, idx) => (
+                                        <span key={idx} className="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full">
+                                          {obj}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
 
                               {/* EXIF data */}
                               {storyPhotos[fullscreenPhotoIndex]?.exif && (
