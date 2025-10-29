@@ -78,6 +78,7 @@
           const [isProcessingPhotos, setIsProcessingPhotos] = useState(false);
           const [showStoryReview, setShowStoryReview] = useState(false);
           const [selectedStoryPhoto, setSelectedStoryPhoto] = useState(null);
+          const [showExifDetails, setShowExifDetails] = useState(false);
           const storyMessagesEndRef = useRef(null);
 
           // Sidebar collapse state
@@ -407,7 +408,18 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               // Final metadata
               title: '',
               finalDescription: '',
-              tags: []
+              tags: [],
+              // EXIF data (simulated)
+              exif: {
+                camera: ['iPhone 14 Pro', 'Canon EOS R5', 'Sony A7 III', 'Nikon Z6'][Math.floor(Math.random() * 4)],
+                lens: ['50mm f/1.8', '24-70mm f/2.8', '85mm f/1.4', '16-35mm f/4'][Math.floor(Math.random() * 4)],
+                aperture: ['f/1.8', 'f/2.8', 'f/4.0', 'f/5.6'][Math.floor(Math.random() * 4)],
+                shutterSpeed: ['1/125', '1/250', '1/500', '1/1000'][Math.floor(Math.random() * 4)],
+                iso: ['100', '200', '400', '800'][Math.floor(Math.random() * 4)],
+                focalLength: ['50mm', '24mm', '85mm', '35mm'][Math.floor(Math.random() * 4)],
+                dateTime: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toLocaleString('ru-RU'),
+                gps: Math.random() > 0.5 ? 'Доступны координаты' : 'Нет данных GPS'
+              }
             };
 
             if (photoSourceContext === 'story') {
@@ -551,6 +563,16 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
             setStoryPhotos(prev => prev.map(photo =>
               photo.id === photoId ? { ...photo, finalDescription: newDescription } : photo
             ));
+          };
+
+          const handleSelectStoryPhoto = (photo, index) => {
+            setSelectedStoryPhoto(photo);
+            setCurrentStoryPhotoIndex(index);
+
+            // Если фотографии еще не обработаны, начинаем обработку
+            if (storyStep === 'uploading' && !photo.aiDescription) {
+              handleStartPhotoStory();
+            }
           };
 
           const handleSaveToCapsula = () => {
@@ -1360,7 +1382,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               onClick={() => setActiveSection('chat')}
                               className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl px-12 py-5 rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
                             >
-                              Начать новый диалог
+                              начать диалог
                             </button>
                           </div>
 
@@ -1483,7 +1505,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 onClick={() => setActiveSection('chat')}
                                 className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl px-12 py-4 rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 mb-8"
                               >
-                                Начать новый диалог
+                                начать диалог
                               </button>
                               <div className="flex justify-center gap-8 text-gray-600">
                                 <button
@@ -2793,7 +2815,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-blue-50/30 via-cyan-50/30 to-purple-50/30">
                         {!showStoryReview ? (
                           <div className="flex flex-1 h-full">
-                            {/* Right Side - Chat */}
+                            {/* Left Side - Chat */}
                             <div className="flex-1 flex flex-col bg-gray-50">
                               {/* Chat Messages */}
                               <div className="flex-1 overflow-y-auto p-6">
@@ -2844,107 +2866,35 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 </div>
                               )}
 
-                              {/* Chat Input */}
-                              {(storyStep === 'chatting' || storyStep === 'intro' || storyStep === 'uploading') && (
-                                <div className="border-t border-gray-200 bg-white p-4">
-                                  <div className="max-w-3xl mx-auto">
-                                    <div className="flex gap-3">
-                                      <textarea
-                                        value={storyInput}
-                                        onChange={(e) => setStoryInput(e.target.value)}
-                                        onKeyPress={handleStoryKeyPress}
-                                        placeholder={
-                                          storyStep === 'chatting'
-                                            ? "Расскажите историю об этой фотографии..."
-                                            : "Напишите сообщение..."
-                                        }
-                                        className="flex-1 border border-gray-300 rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        rows="3"
-                                        disabled={storyStep !== 'chatting'}
-                                      />
-                                      <button
-                                        onClick={handleSendStoryMessage}
-                                        disabled={!storyInput.trim() || storyStep !== 'chatting'}
-                                        className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 rounded-xl hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                      >
-                                        <span className="text-xl">↑</span>
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-
-                              {storyStep === 'completed' && (
-                                <div className="border-t border-gray-200 bg-white p-6">
-                                  <div className="max-w-3xl mx-auto space-y-3">
-                                    <div className="flex gap-3">
-                                      <button
-                                        onClick={() => setShowStoryReview(true)}
-                                        className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-xl font-medium hover:shadow-xl transition-all"
-                                      >
-                                        Просмотреть фотографии
-                                      </button>
-                                      <button
-                                        onClick={() => {
-                                          // Return to chat with ability to send messages
-                                          setStoryStep('chatting');
-                                          setShowStoryReview(false);
-                                        }}
-                                        className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all"
-                                      >
-                                        Вернуться в чат
-                                      </button>
-                                    </div>
+                              {/* Chat Input - Always Available */}
+                              <div className="border-t border-gray-200 bg-white p-4">
+                                <div className="max-w-3xl mx-auto">
+                                  <div className="flex gap-3">
+                                    <textarea
+                                      value={storyInput}
+                                      onChange={(e) => setStoryInput(e.target.value)}
+                                      onKeyPress={handleStoryKeyPress}
+                                      placeholder={
+                                        storyStep === 'chatting'
+                                          ? "Расскажите историю об этой фотографии..."
+                                          : "Задайте вопрос или напишите сообщение..."
+                                      }
+                                      className="flex-1 border border-gray-300 rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      rows="3"
+                                    />
                                     <button
-                                      onClick={() => window.open('https://dmitrijburlaku.nasledie.digital/gallery/', '_blank')}
-                                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-medium hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                                      onClick={handleSendStoryMessage}
+                                      disabled={!storyInput.trim() || storyStep !== 'chatting'}
+                                      className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 rounded-xl hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                      <span>💾</span>
-                                      <span>Сохранить навсегда в капсулу</span>
+                                      <span className="text-xl">↑</span>
                                     </button>
-                                    <div className="flex gap-3">
-                                      <button
-                                        onClick={() => {
-                                          if (navigator.share) {
-                                            navigator.share({
-                                              title: 'Мои ФотоИстории',
-                                              text: 'Посмотрите на мои фотоистории, созданные с помощью NaDi!',
-                                              url: window.location.href
-                                            });
-                                          } else {
-                                            alert('Функция поделиться не поддерживается в вашем браузере');
-                                          }
-                                        }}
-                                        className="flex-1 bg-white border-2 border-blue-300 text-blue-700 px-6 py-3 rounded-xl font-medium hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
-                                      >
-                                        <span>📤</span>
-                                        <span>Поделиться</span>
-                                      </button>
-                                      <button
-                                        onClick={() => {
-                                          const inviteText = 'Присоединяйся ко мне в NaDi! Создавай истории из своих фотографий: https://nasledie.digital';
-                                          if (navigator.share) {
-                                            navigator.share({
-                                              title: 'Приглашение в NaDi',
-                                              text: inviteText
-                                            });
-                                          } else {
-                                            navigator.clipboard.writeText(inviteText);
-                                            alert('Ссылка-приглашение скопирована!');
-                                          }
-                                        }}
-                                        className="flex-1 bg-white border-2 border-green-300 text-green-700 px-6 py-3 rounded-xl font-medium hover:bg-green-50 transition-all flex items-center justify-center gap-2"
-                                      >
-                                        <span>👥</span>
-                                        <span>Пригласить друзей</span>
-                                      </button>
-                                    </div>
                                   </div>
                                 </div>
-                              )}
+                              </div>
                             </div>
-                            {/* Left Side - Photos Upload */}
-                            <div className="w-2/5 border-r border-gray-200 bg-white flex flex-col">
+                            {/* Right Side - Photos */}
+                            <div className="w-2/5 border-l border-gray-200 bg-white flex flex-col overflow-y-auto">
                               <div className="p-6 border-b border-gray-200">
                                 <div className="flex items-center justify-between mb-4">
                                   <div>
@@ -2973,48 +2923,57 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                     </button>
                                   </div>
                                 ) : (
-                                  <div className="grid grid-cols-3 gap-3">
-                                    {storyPhotos.map((photo, index) => (
-                                      <div key={photo.id} className="relative group">
-                                        <div className={`aspect-square bg-gradient-to-br ${photo.gradient} rounded-lg flex items-center justify-center text-3xl shadow-md overflow-hidden relative`}>
-                                          {photo.imageUrl ? (
-                                            <img src={photo.imageUrl} alt={`Photo ${index + 1}`} className="w-full h-full object-cover" />
-                                          ) : (
-                                            <span>{photo.emoji}</span>
-                                          )}
-                                          {currentStoryPhotoIndex === index && storyStep === 'chatting' && (
-                                            <div className="absolute inset-0 bg-blue-500/30 flex items-center justify-center">
-                                              <div className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-bold">
-                                                Текущая
+                                  <>
+                                    <div className="grid grid-cols-3 gap-3 mb-4">
+                                      {storyPhotos.map((photo, index) => (
+                                        <div key={photo.id} className="relative group">
+                                          <div
+                                            onClick={() => handleSelectStoryPhoto(photo, index)}
+                                            className={`aspect-square bg-gradient-to-br ${photo.gradient} rounded-lg flex items-center justify-center text-3xl shadow-md overflow-hidden relative cursor-pointer transition-all hover:ring-4 hover:ring-blue-300 ${
+                                              selectedStoryPhoto?.id === photo.id ? 'ring-4 ring-blue-500' : ''
+                                            }`}
+                                          >
+                                            {photo.imageUrl ? (
+                                              <img src={photo.imageUrl} alt={`Photo ${index + 1}`} className="w-full h-full object-cover" />
+                                            ) : (
+                                              <span>{photo.emoji}</span>
+                                            )}
+                                            {selectedStoryPhoto?.id === photo.id && (
+                                              <div className="absolute top-2 right-2">
+                                                <div className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-bold">
+                                                  ✓
+                                                </div>
                                               </div>
-                                            </div>
-                                          )}
+                                            )}
+                                          </div>
+                                          <button
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              handleRemoveStoryPhoto(photo.id);
+                                            }}
+                                            className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-bold z-10"
+                                          >
+                                            ×
+                                          </button>
                                         </div>
-                                        <button
-                                          onClick={() => handleRemoveStoryPhoto(photo.id)}
-                                          className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-bold"
-                                        >
-                                          ×
-                                        </button>
+                                      ))}
+                                    </div>
+
+                                    {/* Hint to select photo */}
+                                    {storyPhotos.length > 0 && storyStep === 'uploading' && !selectedStoryPhoto && (
+                                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+                                        <p className="text-sm text-blue-700">
+                                          👆 Выберите фотографию, чтобы начать описывать её историю
+                                        </p>
                                       </div>
-                                    ))}
-                                  </div>
+                                    )}
+                                  </>
                                 )}
                               </div>
 
-                              {storyPhotos.length > 0 && storyStep === 'uploading' && (
-                                <div className="p-6">
-                                  <button
-                                    onClick={handleStartPhotoStory}
-                                    className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-lg font-medium hover:shadow-xl transition-all"
-                                  >
-                                    Начать обработку
-                                  </button>
-                                </div>
-                              )}
-
+                              {/* Processing indicator */}
                               {isProcessingPhotos && (
-                                <div className="p-6">
+                                <div className="p-6 border-b border-gray-200">
                                   <div className="bg-blue-50 rounded-lg p-4 text-center">
                                     <div className="animate-spin text-4xl mb-2">⚙️</div>
                                     <p className="text-sm text-gray-600">Обрабатываю фотографии...</p>
@@ -3022,21 +2981,121 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 </div>
                               )}
 
-                              {storyStep === 'chatting' && storyPhotos.length > 0 && (
-                                <div className="p-6 flex-1 overflow-y-auto">
-                                  <div className="bg-blue-50 rounded-lg p-4">
-                                    <div className="text-sm font-semibold text-gray-700 mb-2">Текущая фотография:</div>
-                                    <div className="aspect-square bg-gradient-to-br from-blue-400 to-cyan-400 rounded-lg overflow-hidden mb-3">
-                                      <img
-                                        src={storyPhotos[currentStoryPhotoIndex]?.imageUrl}
-                                        alt="Current"
-                                        className="w-full h-full object-cover"
-                                      />
+                              {/* Selected photo info */}
+                              {selectedStoryPhoto && (
+                                <div className="p-6 border-b border-gray-200">
+                                  <h4 className="text-sm font-semibold text-gray-700 mb-3">Информация о фотографии</h4>
+                                  <div className="space-y-2 text-sm">
+                                    <div className="flex items-start gap-2">
+                                      <span className="text-gray-500">📝</span>
+                                      <div className="flex-1">
+                                        <span className="text-gray-600">Описание:</span>
+                                        <p className="text-gray-800 mt-1">{selectedStoryPhoto.story || selectedStoryPhoto.aiDescription || 'Пока нет описания'}</p>
+                                      </div>
                                     </div>
-                                    <div className="text-xs text-gray-600">
-                                      Фото {currentStoryPhotoIndex + 1} из {storyPhotos.length}
-                                    </div>
+                                    {selectedStoryPhoto.date && (
+                                      <div className="flex items-center gap-2">
+                                        <span>📅</span>
+                                        <span className="text-gray-600">Дата:</span>
+                                        <span className="text-gray-800">{selectedStoryPhoto.date}</span>
+                                      </div>
+                                    )}
+                                    {selectedStoryPhoto.place && (
+                                      <div className="flex items-center gap-2">
+                                        <span>📍</span>
+                                        <span className="text-gray-600">Место:</span>
+                                        <span className="text-gray-800">{selectedStoryPhoto.place}</span>
+                                      </div>
+                                    )}
+                                    {selectedStoryPhoto.people && (
+                                      <div className="flex items-center gap-2">
+                                        <span>👥</span>
+                                        <span className="text-gray-600">Люди:</span>
+                                        <span className="text-gray-800">{selectedStoryPhoto.people}</span>
+                                      </div>
+                                    )}
                                   </div>
+
+                                  {/* EXIF data collapsible */}
+                                  {selectedStoryPhoto.exif && (
+                                    <div className="mt-4">
+                                      <button
+                                        onClick={() => setShowExifDetails(!showExifDetails)}
+                                        className="flex items-center justify-between w-full text-sm font-semibold text-gray-700 hover:text-blue-600 transition-colors"
+                                      >
+                                        <span>📷 Технические данные (EXIF)</span>
+                                        <span className="transform transition-transform" style={{ transform: showExifDetails ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                                          ▼
+                                        </span>
+                                      </button>
+                                      {showExifDetails && (
+                                        <div className="mt-3 space-y-2 text-xs bg-gray-50 rounded-lg p-3">
+                                          <div className="flex justify-between">
+                                            <span className="text-gray-600">Камера:</span>
+                                            <span className="text-gray-800">{selectedStoryPhoto.exif.camera}</span>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span className="text-gray-600">Объектив:</span>
+                                            <span className="text-gray-800">{selectedStoryPhoto.exif.lens}</span>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span className="text-gray-600">Диафрагма:</span>
+                                            <span className="text-gray-800">{selectedStoryPhoto.exif.aperture}</span>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span className="text-gray-600">Выдержка:</span>
+                                            <span className="text-gray-800">{selectedStoryPhoto.exif.shutterSpeed}</span>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span className="text-gray-600">ISO:</span>
+                                            <span className="text-gray-800">{selectedStoryPhoto.exif.iso}</span>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span className="text-gray-600">Фокусное расстояние:</span>
+                                            <span className="text-gray-800">{selectedStoryPhoto.exif.focalLength}</span>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span className="text-gray-600">Дата съёмки:</span>
+                                            <span className="text-gray-800">{selectedStoryPhoto.exif.dateTime}</span>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span className="text-gray-600">GPS:</span>
+                                            <span className="text-gray-800">{selectedStoryPhoto.exif.gps}</span>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              {/* Action buttons - shown only when photo is selected */}
+                              {selectedStoryPhoto && storyStep !== 'intro' && (
+                                <div className="p-6 space-y-3">
+                                  <button
+                                    onClick={() => window.open('https://dmitrijburlaku.nasledie.digital/gallery/', '_blank')}
+                                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-medium hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                                  >
+                                    <span>💾</span>
+                                    <span>Сохранить в капсулу</span>
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      if (navigator.share) {
+                                        navigator.share({
+                                          title: 'Моя ФотоИстория',
+                                          text: 'Посмотрите на мою фотоисторию, созданную с помощью NaDi!',
+                                          url: window.location.href
+                                        });
+                                      } else {
+                                        alert('Функция поделиться не поддерживается в вашем браузере');
+                                      }
+                                    }}
+                                    className="w-full bg-white border-2 border-blue-300 text-blue-700 px-6 py-3 rounded-xl font-medium hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
+                                  >
+                                    <span>📤</span>
+                                    <span>Поделиться</span>
+                                  </button>
                                 </div>
                               )}
                             </div>
@@ -3106,14 +3165,12 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                     Ваши фотоистории готовы к сохранению в капсулу времени
                                   </p>
                                   <div className="space-y-3">
-                                    <div className="flex gap-3">
-                                      <button
-                                        onClick={() => setShowStoryReview(false)}
-                                        className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all"
-                                      >
-                                        Вернуться в чат
-                                      </button>
-                                    </div>
+                                    <button
+                                      onClick={() => setShowStoryReview(false)}
+                                      className="w-full px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all"
+                                    >
+                                      Закрыть просмотр
+                                    </button>
                                     <button
                                       onClick={() => window.open('https://dmitrijburlaku.nasledie.digital/gallery/', '_blank')}
                                       className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-xl font-medium hover:shadow-xl transition-all flex items-center justify-center gap-2"
