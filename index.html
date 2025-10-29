@@ -79,6 +79,11 @@
           const [showStoryReview, setShowStoryReview] = useState(false);
           const [selectedStoryPhoto, setSelectedStoryPhoto] = useState(null);
           const [showExifDetails, setShowExifDetails] = useState(false);
+          const [isFullscreenPhoto, setIsFullscreenPhoto] = useState(false);
+          const [fullscreenPhotoIndex, setFullscreenPhotoIndex] = useState(0);
+          const [selectedPhotoIds, setSelectedPhotoIds] = useState([]); // for multi-select
+          const [isRecordingVoice, setIsRecordingVoice] = useState(false);
+          const [isRecordingFullscreenVoice, setIsRecordingFullscreenVoice] = useState(false);
           const storyMessagesEndRef = useRef(null);
 
           // Sidebar collapse state
@@ -503,38 +508,30 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
 
             // Simulate AI processing the answer
             setTimeout(() => {
-              // Update current photo with user's story
+              // Update photo(s) with user's story
               const updatedPhotos = [...storyPhotos];
-              if (updatedPhotos[currentStoryPhotoIndex]) {
-                updatedPhotos[currentStoryPhotoIndex].story =
-                  (updatedPhotos[currentStoryPhotoIndex].story || '') + ' ' + userMessage;
+
+              // Если выбрано несколько фотографий, обновляем все
+              if (selectedPhotoIds.length > 0) {
+                selectedPhotoIds.forEach(photoId => {
+                  const photoIndex = updatedPhotos.findIndex(p => p.id === photoId);
+                  if (photoIndex !== -1) {
+                    updatedPhotos[photoIndex].story =
+                      (updatedPhotos[photoIndex].story || updatedPhotos[photoIndex].aiDescription || '') + ' ' + userMessage;
+                    updatedPhotos[photoIndex].finalDescription = updatedPhotos[photoIndex].story;
+                  }
+                });
                 setStoryPhotos(updatedPhotos);
-              }
-
-              addStoryMessage('nadi', 'Спасибо за историю! Я сохранил всё в Твои истории 💾');
-
-              // Ask if user wants to move to next photo
-              if (currentStoryPhotoIndex < storyPhotos.length - 1) {
-                setTimeout(() => {
-                  addStoryMessage('nadi', 'Хотите перейти к следующей фотографии?');
-                  setStoryStep('waiting_next');
-                }, 1500);
+                addStoryMessage('nadi', `Спасибо! Я добавил эту информацию к ${selectedPhotoIds.length} фотографиям 💾`);
               } else {
-                // All photos processed
-                setTimeout(() => {
-                  addStoryMessage('nadi', 'Отлично! Все фотографии описаны! 🎉\n\nТеперь давайте посмотрим на результат. Я создал описания, объединив то, что я увидел на фотографиях и ваши истории.');
-                  setTimeout(() => {
-                    setStoryStep('completed');
-                    // Generate final descriptions
-                    const finalPhotos = storyPhotos.map((photo, index) => ({
-                      ...photo,
-                      title: `Фотография ${index + 1}`,
-                      finalDescription: `${photo.aiDescription} ${photo.story || ''}`.trim(),
-                      tags: [...photo.aiEntities]
-                    }));
-                    setStoryPhotos(finalPhotos);
-                  }, 2000);
-                }, 1500);
+                // Иначе обновляем только текущую фотографию
+                if (updatedPhotos[currentStoryPhotoIndex]) {
+                  updatedPhotos[currentStoryPhotoIndex].story =
+                    (updatedPhotos[currentStoryPhotoIndex].story || updatedPhotos[currentStoryPhotoIndex].aiDescription || '') + ' ' + userMessage;
+                  updatedPhotos[currentStoryPhotoIndex].finalDescription = updatedPhotos[currentStoryPhotoIndex].story;
+                  setStoryPhotos(updatedPhotos);
+                }
+                addStoryMessage('nadi', 'Спасибо за дополнение! Я обновил описание фотографии 💾');
               }
             }, 1000);
           };
@@ -572,7 +569,165 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
             // Если фотографии еще не обработаны, начинаем обработку
             if (storyStep === 'uploading' && !photo.aiDescription) {
               handleStartPhotoStory();
+            } else if (photo.aiDescription && storyStep === 'chatting') {
+              // Спрашиваем, что хотели бы дополнить к фотографии
+              addStoryMessage('nadi', `Вы выбрали фотографию ${index + 1}.\n\nТекущее описание: ${photo.aiDescription}\n\nЧто бы вы хотели дополнить к этой фотографии?`);
             }
+          };
+
+          const handleTogglePhotoSelection = (photoId) => {
+            setSelectedPhotoIds(prev => {
+              if (prev.includes(photoId)) {
+                return prev.filter(id => id !== photoId);
+              } else {
+                return [...prev, photoId];
+              }
+            });
+          };
+
+          const handleDoubleClickPhoto = (index) => {
+            setFullscreenPhotoIndex(index);
+            setIsFullscreenPhoto(true);
+          };
+
+          const handleCloseFullscreen = () => {
+            setIsFullscreenPhoto(false);
+          };
+
+          const handleStartVoiceRecording = () => {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+              const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+              const recognition = new SpeechRecognition();
+              recognition.lang = 'ru-RU';
+              recognition.continuous = false;
+              recognition.interimResults = false;
+
+              recognition.onstart = () => {
+                setIsRecordingVoice(true);
+              };
+
+              recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                setStoryInput(prev => prev + ' ' + transcript);
+                setIsRecordingVoice(false);
+              };
+
+              recognition.onerror = () => {
+                setIsRecordingVoice(false);
+                alert('Ошибка распознавания голоса. Проверьте разрешения микрофона.');
+              };
+
+              recognition.onend = () => {
+                setIsRecordingVoice(false);
+              };
+
+              recognition.start();
+            } else {
+              alert('Голосовой ввод не поддерживается в вашем браузере');
+            }
+          };
+
+          const handleFullscreenVoiceRecording = () => {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+              const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+              const recognition = new SpeechRecognition();
+              recognition.lang = 'ru-RU';
+              recognition.continuous = false;
+              recognition.interimResults = false;
+
+              recognition.onstart = () => {
+                setIsRecordingFullscreenVoice(true);
+              };
+
+              recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                // Добавляем описание напрямую к текущей фотографии
+                const updatedPhotos = [...storyPhotos];
+                if (updatedPhotos[fullscreenPhotoIndex]) {
+                  updatedPhotos[fullscreenPhotoIndex].story =
+                    (updatedPhotos[fullscreenPhotoIndex].story || updatedPhotos[fullscreenPhotoIndex].aiDescription || '') + ' ' + transcript;
+                  updatedPhotos[fullscreenPhotoIndex].finalDescription = updatedPhotos[fullscreenPhotoIndex].story;
+                  setStoryPhotos(updatedPhotos);
+                }
+                setIsRecordingFullscreenVoice(false);
+              };
+
+              recognition.onerror = () => {
+                setIsRecordingFullscreenVoice(false);
+                alert('Ошибка распознавания голоса. Проверьте разрешения микрофона.');
+              };
+
+              recognition.onend = () => {
+                setIsRecordingFullscreenVoice(false);
+              };
+
+              recognition.start();
+            } else {
+              alert('Голосовой ввод не поддерживается в вашем браузере');
+            }
+          };
+
+          const handleDownloadPhotoWithDescription = () => {
+            if (!selectedStoryPhoto) {
+              alert('Пожалуйста, выберите фотографию');
+              return;
+            }
+
+            // Создаем canvas для добавления текста на изображение
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+
+            img.onload = () => {
+              canvas.width = img.width;
+              canvas.height = img.height + 200; // Добавляем место для текста
+
+              // Рисуем изображение
+              ctx.drawImage(img, 0, 0);
+
+              // Добавляем описание
+              ctx.fillStyle = 'white';
+              ctx.fillRect(0, img.height, canvas.width, 200);
+
+              ctx.fillStyle = 'black';
+              ctx.font = '16px Arial';
+              const description = selectedStoryPhoto.story || selectedStoryPhoto.aiDescription || 'Нет описания';
+              const maxWidth = canvas.width - 40;
+              const lines = [];
+              let currentLine = '';
+              const words = description.split(' ');
+
+              words.forEach(word => {
+                const testLine = currentLine + word + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && currentLine !== '') {
+                  lines.push(currentLine);
+                  currentLine = word + ' ';
+                } else {
+                  currentLine = testLine;
+                }
+              });
+              lines.push(currentLine);
+
+              lines.forEach((line, index) => {
+                ctx.fillText(line, 20, img.height + 30 + (index * 25));
+              });
+
+              // Скачиваем изображение
+              canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `photo-story-${Date.now()}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+              });
+            };
+
+            img.src = selectedStoryPhoto.imageUrl;
           };
 
           const handleSaveToCapsula = () => {
@@ -2797,7 +2952,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                       {/* Photo Story Header */}
                       <div className="bg-white border-b border-gray-200 px-6 py-4">
                         <div className="flex items-center justify-between">
-                          <div>
+                          <div className="flex-1">
                             <button
                               onClick={handleClosePhotoStory}
                               className="text-blue-600 hover:text-blue-700 mb-2 flex items-center gap-2"
@@ -2807,6 +2962,45 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                             </button>
                             <h2 className="text-2xl font-bold text-gray-800">ФотоИстории</h2>
                             <p className="text-sm text-gray-500 mt-1">Создайте живые истории из ваших фотографий</p>
+                          </div>
+                          {/* Action buttons in top-right corner */}
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={handleDownloadPhotoWithDescription}
+                              disabled={!selectedStoryPhoto}
+                              className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <span>⬇️</span>
+                              <span>Скачать с описанием</span>
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (navigator.share && selectedStoryPhoto) {
+                                  navigator.share({
+                                    title: 'Моя ФотоИстория',
+                                    text: 'Посмотрите на мою фотоисторию, созданную с помощью NaDi!',
+                                    url: window.location.href
+                                  });
+                                } else if (!selectedStoryPhoto) {
+                                  alert('Пожалуйста, выберите фотографию');
+                                } else {
+                                  alert('Функция поделиться не поддерживается в вашем браузере');
+                                }
+                              }}
+                              disabled={!selectedStoryPhoto}
+                              className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <span>📤</span>
+                              <span>Поделиться</span>
+                            </button>
+                            <button
+                              onClick={() => window.open('https://dmitrijburlaku.nasledie.digital/gallery/', '_blank')}
+                              disabled={!selectedStoryPhoto}
+                              className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <span>💾</span>
+                              <span>Сохранить в капсулу</span>
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -2846,26 +3040,6 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 </div>
                               </div>
 
-                              {/* Waiting for next photo response */}
-                              {storyStep === 'waiting_next' && (
-                                <div className="border-t border-gray-200 bg-white p-4">
-                                  <div className="max-w-3xl mx-auto flex gap-3">
-                                    <button
-                                      onClick={handleMoveToNextPhoto}
-                                      className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-xl font-medium hover:shadow-xl transition-all"
-                                    >
-                                      ✅ Да, перейти к следующей
-                                    </button>
-                                    <button
-                                      onClick={handleContinueEditing}
-                                      className="flex-1 bg-white border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-50 transition-all"
-                                    >
-                                      ✏️ Продолжить редактировать
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-
                               {/* Chat Input - Always Available */}
                               <div className="border-t border-gray-200 bg-white p-4">
                                 <div className="max-w-3xl mx-auto">
@@ -2882,13 +3056,23 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                       className="flex-1 border border-gray-300 rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                                       rows="3"
                                     />
-                                    <button
-                                      onClick={handleSendStoryMessage}
-                                      disabled={!storyInput.trim() || storyStep !== 'chatting'}
-                                      className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 rounded-xl hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                      <span className="text-xl">↑</span>
-                                    </button>
+                                    <div className="flex flex-col gap-2">
+                                      <button
+                                        onClick={handleStartVoiceRecording}
+                                        disabled={isRecordingVoice || storyStep !== 'chatting'}
+                                        className={`${isRecordingVoice ? 'bg-red-500 animate-pulse' : 'bg-gray-500 hover:bg-gray-600'} text-white px-4 py-2 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
+                                        title="Голосовой ввод"
+                                      >
+                                        <span className="text-xl">{isRecordingVoice ? '⏹️' : '🎤'}</span>
+                                      </button>
+                                      <button
+                                        onClick={handleSendStoryMessage}
+                                        disabled={!storyInput.trim() || storyStep !== 'chatting'}
+                                        className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-xl hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                      >
+                                        <span className="text-xl">↑</span>
+                                      </button>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -2924,11 +3108,46 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                   </div>
                                 ) : (
                                   <>
+                                    {/* Multi-select hint */}
+                                    {selectedPhotoIds.length > 0 && (
+                                      <div className="mb-3 bg-green-50 border border-green-200 rounded-lg p-2 text-center">
+                                        <p className="text-sm text-green-700">
+                                          Выбрано фото: {selectedPhotoIds.length}. Ваши сообщения будут применены ко всем выбранным фото.
+                                        </p>
+                                        <button
+                                          onClick={() => setSelectedPhotoIds([])}
+                                          className="text-xs text-green-600 hover:text-green-800 underline mt-1"
+                                        >
+                                          Снять выделение
+                                        </button>
+                                      </div>
+                                    )}
+
                                     <div className="grid grid-cols-3 gap-3 mb-4">
                                       {storyPhotos.map((photo, index) => (
                                         <div key={photo.id} className="relative group">
+                                          {/* Multi-select checkbox */}
+                                          <div
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              handleTogglePhotoSelection(photo.id);
+                                            }}
+                                            className="absolute top-2 left-2 z-20 cursor-pointer"
+                                          >
+                                            <div className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-all ${
+                                              selectedPhotoIds.includes(photo.id)
+                                                ? 'bg-green-500 border-green-600'
+                                                : 'bg-white border-gray-300 opacity-0 group-hover:opacity-100'
+                                            }`}>
+                                              {selectedPhotoIds.includes(photo.id) && (
+                                                <span className="text-white text-sm">✓</span>
+                                              )}
+                                            </div>
+                                          </div>
+
                                           <div
                                             onClick={() => handleSelectStoryPhoto(photo, index)}
+                                            onDoubleClick={() => handleDoubleClickPhoto(index)}
                                             className={`aspect-square bg-gradient-to-br ${photo.gradient} rounded-lg flex items-center justify-center text-3xl shadow-md overflow-hidden relative cursor-pointer transition-all hover:ring-4 hover:ring-blue-300 ${
                                               selectedStoryPhoto?.id === photo.id ? 'ring-4 ring-blue-500' : ''
                                             }`}
@@ -2960,10 +3179,13 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                     </div>
 
                                     {/* Hint to select photo */}
-                                    {storyPhotos.length > 0 && storyStep === 'uploading' && !selectedStoryPhoto && (
+                                    {storyPhotos.length > 0 && storyStep === 'uploading' && !selectedStoryPhoto && selectedPhotoIds.length === 0 && (
                                       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
                                         <p className="text-sm text-blue-700">
                                           👆 Выберите фотографию, чтобы начать описывать её историю
+                                        </p>
+                                        <p className="text-xs text-blue-600 mt-1">
+                                          Двойной клик для полноэкранного режима
                                         </p>
                                       </div>
                                     )}
@@ -3069,35 +3291,6 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 </div>
                               )}
 
-                              {/* Action buttons - shown only when photo is selected */}
-                              {selectedStoryPhoto && storyStep !== 'intro' && (
-                                <div className="p-6 space-y-3">
-                                  <button
-                                    onClick={() => window.open('https://dmitrijburlaku.nasledie.digital/gallery/', '_blank')}
-                                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-medium hover:shadow-xl transition-all flex items-center justify-center gap-2"
-                                  >
-                                    <span>💾</span>
-                                    <span>Сохранить в капсулу</span>
-                                  </button>
-                                  <button
-                                    onClick={() => {
-                                      if (navigator.share) {
-                                        navigator.share({
-                                          title: 'Моя ФотоИстория',
-                                          text: 'Посмотрите на мою фотоисторию, созданную с помощью NaDi!',
-                                          url: window.location.href
-                                        });
-                                      } else {
-                                        alert('Функция поделиться не поддерживается в вашем браузере');
-                                      }
-                                    }}
-                                    className="w-full bg-white border-2 border-blue-300 text-blue-700 px-6 py-3 rounded-xl font-medium hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
-                                  >
-                                    <span>📤</span>
-                                    <span>Поделиться</span>
-                                  </button>
-                                </div>
-                              )}
                             </div>
                           </div>
                         ) : (
@@ -3222,6 +3415,129 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                           </div>
                         )}
                       </div>
+
+                      {/* Fullscreen Photo Modal */}
+                      {isFullscreenPhoto && (
+                        <div className="fixed inset-0 bg-black bg-opacity-95 z-50 flex">
+                          {/* Left Side - Photo */}
+                          <div className="flex-1 flex items-center justify-center p-8 relative">
+                            <button
+                              onClick={handleCloseFullscreen}
+                              className="absolute top-4 left-4 text-white text-3xl hover:text-gray-300 transition-colors z-10"
+                            >
+                              ×
+                            </button>
+
+                            {/* Previous button */}
+                            {fullscreenPhotoIndex > 0 && (
+                              <button
+                                onClick={() => setFullscreenPhotoIndex(fullscreenPhotoIndex - 1)}
+                                className="absolute left-8 text-white text-5xl hover:text-gray-300 transition-colors"
+                              >
+                                ‹
+                              </button>
+                            )}
+
+                            {/* Photo */}
+                            <img
+                              src={storyPhotos[fullscreenPhotoIndex]?.imageUrl}
+                              alt={`Photo ${fullscreenPhotoIndex + 1}`}
+                              className="max-w-full max-h-full object-contain"
+                            />
+
+                            {/* Next button */}
+                            {fullscreenPhotoIndex < storyPhotos.length - 1 && (
+                              <button
+                                onClick={() => setFullscreenPhotoIndex(fullscreenPhotoIndex + 1)}
+                                className="absolute right-8 text-white text-5xl hover:text-gray-300 transition-colors"
+                              >
+                                ›
+                              </button>
+                            )}
+
+                            {/* Photo counter */}
+                            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 text-white px-4 py-2 rounded-full text-sm">
+                              {fullscreenPhotoIndex + 1} / {storyPhotos.length}
+                            </div>
+                          </div>
+
+                          {/* Right Side - Info Panel */}
+                          <div className="w-96 bg-white overflow-y-auto">
+                            <div className="p-6">
+                              <h3 className="text-xl font-bold text-gray-800 mb-4">Информация о фотографии</h3>
+
+                              {/* Editable description */}
+                              <div className="mb-4">
+                                <label className="text-sm font-semibold text-gray-700 block mb-2">Описание:</label>
+                                <textarea
+                                  value={storyPhotos[fullscreenPhotoIndex]?.story || storyPhotos[fullscreenPhotoIndex]?.aiDescription || ''}
+                                  onChange={(e) => {
+                                    const updatedPhotos = [...storyPhotos];
+                                    updatedPhotos[fullscreenPhotoIndex].story = e.target.value;
+                                    updatedPhotos[fullscreenPhotoIndex].finalDescription = e.target.value;
+                                    setStoryPhotos(updatedPhotos);
+                                  }}
+                                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  rows="6"
+                                />
+                              </div>
+
+                              {/* Voice input button */}
+                              <button
+                                onClick={handleFullscreenVoiceRecording}
+                                disabled={isRecordingFullscreenVoice}
+                                className={`w-full mb-4 flex items-center justify-center gap-2 ${
+                                  isRecordingFullscreenVoice ? 'bg-red-500 animate-pulse' : 'bg-gray-500 hover:bg-gray-600'
+                                } text-white px-4 py-3 rounded-lg font-medium transition-all disabled:opacity-50`}
+                              >
+                                <span className="text-xl">{isRecordingFullscreenVoice ? '⏹️' : '🎤'}</span>
+                                <span>{isRecordingFullscreenVoice ? 'Запись...' : 'Добавить голосом'}</span>
+                              </button>
+
+                              {/* EXIF data */}
+                              {storyPhotos[fullscreenPhotoIndex]?.exif && (
+                                <div>
+                                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Технические данные (EXIF):</h4>
+                                  <div className="space-y-1 text-xs bg-gray-50 rounded-lg p-3">
+                                    <div className="flex justify-between">
+                                      <span className="text-gray-600">Камера:</span>
+                                      <span className="text-gray-800">{storyPhotos[fullscreenPhotoIndex].exif.camera}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-gray-600">Объектив:</span>
+                                      <span className="text-gray-800">{storyPhotos[fullscreenPhotoIndex].exif.lens}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-gray-600">Диафрагма:</span>
+                                      <span className="text-gray-800">{storyPhotos[fullscreenPhotoIndex].exif.aperture}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-gray-600">Выдержка:</span>
+                                      <span className="text-gray-800">{storyPhotos[fullscreenPhotoIndex].exif.shutterSpeed}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-gray-600">ISO:</span>
+                                      <span className="text-gray-800">{storyPhotos[fullscreenPhotoIndex].exif.iso}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-gray-600">Фокусное расстояние:</span>
+                                      <span className="text-gray-800">{storyPhotos[fullscreenPhotoIndex].exif.focalLength}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-gray-600">Дата съёмки:</span>
+                                      <span className="text-gray-800">{storyPhotos[fullscreenPhotoIndex].exif.dateTime}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-gray-600">GPS:</span>
+                                      <span className="text-gray-800">{storyPhotos[fullscreenPhotoIndex].exif.gps}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </>
                   ) : activeSection === 'capsule' ? (
                     <>
