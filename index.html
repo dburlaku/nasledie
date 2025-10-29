@@ -84,6 +84,11 @@
           const [selectedPhotoIds, setSelectedPhotoIds] = useState([]); // for multi-select
           const [isRecordingVoice, setIsRecordingVoice] = useState(false);
           const [isRecordingFullscreenVoice, setIsRecordingFullscreenVoice] = useState(false);
+          const [showMarkerMode, setShowMarkerMode] = useState(false); // режим добавления меток
+          const [showMarkersOverlay, setShowMarkersOverlay] = useState(false); // показывать метки на фото
+          const [showActionsMenu, setShowActionsMenu] = useState(false); // троеточие меню
+          const [isPlayingDescription, setIsPlayingDescription] = useState(false); // воспроизведение описания
+          const [newMarkerLabel, setNewMarkerLabel] = useState(''); // текст новой метки
           const storyMessagesEndRef = useRef(null);
 
           // Sidebar collapse state
@@ -418,6 +423,7 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               finalDescription: '',
               tags: [],
               suggestedTags: ['память', 'история', 'момент'], // AI-suggested tags
+              markers: [], // Метки на фото [{id, x, y, label}]
               // EXIF data (simulated)
               exif: {
                 camera: ['iPhone 14 Pro', 'Canon EOS R5', 'Sony A7 III', 'Nikon Z6'][Math.floor(Math.random() * 4)],
@@ -695,6 +701,78 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
               recognition.start();
             } else {
               alert('Голосовой ввод не поддерживается в вашем браузере');
+            }
+          };
+
+          const handleAddMarkerToPhoto = (e) => {
+            if (!showMarkerMode || !newMarkerLabel.trim()) return;
+
+            const rect = e.target.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100; // процент от ширины
+            const y = ((e.clientY - rect.top) / rect.height) * 100; // процент от высоты
+
+            const newMarker = {
+              id: Date.now(),
+              x: x,
+              y: y,
+              label: newMarkerLabel
+            };
+
+            const updatedPhotos = [...storyPhotos];
+            if (!updatedPhotos[fullscreenPhotoIndex].markers) {
+              updatedPhotos[fullscreenPhotoIndex].markers = [];
+            }
+            updatedPhotos[fullscreenPhotoIndex].markers.push(newMarker);
+            setStoryPhotos(updatedPhotos);
+            setNewMarkerLabel('');
+            setShowMarkerMode(false);
+          };
+
+          const handleRemoveMarker = (markerId) => {
+            const updatedPhotos = [...storyPhotos];
+            if (updatedPhotos[fullscreenPhotoIndex].markers) {
+              updatedPhotos[fullscreenPhotoIndex].markers =
+                updatedPhotos[fullscreenPhotoIndex].markers.filter(m => m.id !== markerId);
+              setStoryPhotos(updatedPhotos);
+            }
+          };
+
+          const handlePlayDescription = () => {
+            if ('speechSynthesis' in window) {
+              const description = storyPhotos[fullscreenPhotoIndex]?.story ||
+                                 storyPhotos[fullscreenPhotoIndex]?.aiDescription ||
+                                 storyPhotos[fullscreenPhotoIndex]?.finalDescription ||
+                                 'Нет описания';
+
+              if (isPlayingDescription) {
+                window.speechSynthesis.cancel();
+                setIsPlayingDescription(false);
+              } else {
+                const utterance = new SpeechSynthesisUtterance(description);
+                utterance.lang = 'ru-RU';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+
+                utterance.onstart = () => setIsPlayingDescription(true);
+                utterance.onend = () => setIsPlayingDescription(false);
+                utterance.onerror = () => setIsPlayingDescription(false);
+
+                window.speechSynthesis.speak(utterance);
+              }
+            } else {
+              alert('Воспроизведение текста не поддерживается в вашем браузере');
+            }
+          };
+
+          const handleRegenerateDescription = () => {
+            const updatedPhotos = [...storyPhotos];
+            if (updatedPhotos[fullscreenPhotoIndex]) {
+              // Симулируем регенерацию AI описания
+              const newDescription = `AI обновил описание фотографии на основе всех данных: ${updatedPhotos[fullscreenPhotoIndex].userStory || 'Ваши воспоминания помогут создать более живую историю.'}`;
+              updatedPhotos[fullscreenPhotoIndex].aiDescription = newDescription;
+              updatedPhotos[fullscreenPhotoIndex].finalDescription = newDescription;
+              setStoryPhotos(updatedPhotos);
+              alert('Описание успешно перегенерировано!');
             }
           };
 
@@ -3524,12 +3602,119 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                               </button>
                             )}
 
-                            {/* Photo */}
-                            <img
-                              src={storyPhotos[fullscreenPhotoIndex]?.imageUrl}
-                              alt={`Photo ${fullscreenPhotoIndex + 1}`}
-                              className="max-w-full max-h-full object-contain"
-                            />
+                            {/* Photo with markers */}
+                            <div className="relative">
+                              <img
+                                src={storyPhotos[fullscreenPhotoIndex]?.imageUrl}
+                                alt={`Photo ${fullscreenPhotoIndex + 1}`}
+                                className="max-w-full max-h-full object-contain"
+                                onClick={showMarkerMode ? handleAddMarkerToPhoto : undefined}
+                                style={{ cursor: showMarkerMode ? 'crosshair' : 'default' }}
+                              />
+
+                              {/* Markers overlay */}
+                              {showMarkersOverlay && storyPhotos[fullscreenPhotoIndex]?.markers?.map(marker => (
+                                <div
+                                  key={marker.id}
+                                  className="absolute w-8 h-8 bg-red-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:bg-red-600"
+                                  style={{
+                                    left: `${marker.x}%`,
+                                    top: `${marker.y}%`,
+                                    transform: 'translate(-50%, -50%)'
+                                  }}
+                                  title={marker.label}
+                                >
+                                  •
+                                </div>
+                              ))}
+
+                              {/* Control buttons on photo */}
+                              <div className="absolute top-4 right-4 flex gap-2">
+                                {/* Add marker button */}
+                                <button
+                                  onClick={() => {
+                                    if (showMarkerMode) {
+                                      setShowMarkerMode(false);
+                                      setNewMarkerLabel('');
+                                    } else {
+                                      const label = prompt('Введите название метки:');
+                                      if (label) {
+                                        setNewMarkerLabel(label);
+                                        setShowMarkerMode(true);
+                                      }
+                                    }
+                                  }}
+                                  className={`${showMarkerMode ? 'bg-red-500' : 'bg-white'} ${showMarkerMode ? 'text-white' : 'text-gray-800'} px-4 py-2 rounded-lg font-bold shadow-lg hover:shadow-xl transition-all`}
+                                  title="Добавить метку"
+                                >
+                                  {showMarkerMode ? '✕' : '+'}
+                                </button>
+
+                                {/* Show markers button */}
+                                <button
+                                  onClick={() => setShowMarkersOverlay(!showMarkersOverlay)}
+                                  className={`${showMarkersOverlay ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'} px-4 py-2 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all`}
+                                  title="Показать метки"
+                                >
+                                  Метки
+                                </button>
+
+                                {/* Actions menu (three dots) */}
+                                <div className="relative">
+                                  <button
+                                    onClick={() => setShowActionsMenu(!showActionsMenu)}
+                                    className="bg-white text-gray-800 px-4 py-2 rounded-lg font-bold shadow-lg hover:shadow-xl transition-all"
+                                    title="Действия"
+                                  >
+                                    ⋮
+                                  </button>
+
+                                  {showActionsMenu && (
+                                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-20">
+                                      <button
+                                        onClick={() => {
+                                          handleDownloadPhotoWithDescription();
+                                          setShowActionsMenu(false);
+                                        }}
+                                        className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+                                      >
+                                        <span>⬇️</span>
+                                        <span>Скачать</span>
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          if (navigator.share) {
+                                            navigator.share({
+                                              title: 'Моя ФотоИстория',
+                                              text: 'Посмотрите на мою фотоисторию!',
+                                              url: window.location.href
+                                            });
+                                          } else {
+                                            alert('Функция поделиться не поддерживается');
+                                          }
+                                          setShowActionsMenu(false);
+                                        }}
+                                        className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+                                      >
+                                        <span>📤</span>
+                                        <span>Поделиться</span>
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          alert('Фотография будет сохранена в капсулу!');
+                                          window.open('https://dmitrijburlaku.nasledie.digital/gallery/', '_blank');
+                                          setShowActionsMenu(false);
+                                        }}
+                                        className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+                                      >
+                                        <span>💾</span>
+                                        <span>Сохранить в капсулу</span>
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
 
                             {/* Next button */}
                             {fullscreenPhotoIndex < storyPhotos.length - 1 && (
@@ -3579,6 +3764,63 @@ ${greetingDetails ? `\n📝 Дополнительно: ${greetingDetails}` : ''
                                 <span className="text-xl">{isRecordingFullscreenVoice ? '⏹️' : '🎤'}</span>
                                 <span>{isRecordingFullscreenVoice ? 'Запись...' : 'рассказать'}</span>
                               </button>
+
+                              {/* Play and Regenerate buttons */}
+                              <div className="flex gap-2 mb-4">
+                                <button
+                                  onClick={handlePlayDescription}
+                                  className={`flex-1 flex items-center justify-center gap-2 ${
+                                    isPlayingDescription ? 'bg-orange-500' : 'bg-blue-500 hover:bg-blue-600'
+                                  } text-white px-4 py-2 rounded-lg font-medium transition-all`}
+                                  title="Прослушать описание"
+                                >
+                                  <span className="text-xl">{isPlayingDescription ? '⏸️' : '🔊'}</span>
+                                  <span>{isPlayingDescription ? 'Стоп' : 'Прослушать'}</span>
+                                </button>
+                                <button
+                                  onClick={handleRegenerateDescription}
+                                  className="flex-1 flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-all"
+                                  title="Перегенерировать описание с помощью AI"
+                                >
+                                  <span className="text-xl">🔄</span>
+                                  <span>AI</span>
+                                </button>
+                              </div>
+
+                              {/* Markers section */}
+                              {storyPhotos[fullscreenPhotoIndex]?.markers && storyPhotos[fullscreenPhotoIndex].markers.length > 0 && (
+                                <div className="mb-4">
+                                  <label className="text-sm font-semibold text-gray-700 block mb-2">Метки на фото:</label>
+                                  <div className="space-y-2">
+                                    {storyPhotos[fullscreenPhotoIndex].markers.map((marker) => (
+                                      <div key={marker.id} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg">
+                                        <div className="flex items-center gap-2">
+                                          <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+                                          <input
+                                            type="text"
+                                            value={marker.label}
+                                            onChange={(e) => {
+                                              const updatedPhotos = [...storyPhotos];
+                                              const markerIndex = updatedPhotos[fullscreenPhotoIndex].markers.findIndex(m => m.id === marker.id);
+                                              if (markerIndex !== -1) {
+                                                updatedPhotos[fullscreenPhotoIndex].markers[markerIndex].label = e.target.value;
+                                                setStoryPhotos(updatedPhotos);
+                                              }
+                                            }}
+                                            className="flex-1 bg-transparent border-none text-sm focus:outline-none focus:ring-0"
+                                          />
+                                        </div>
+                                        <button
+                                          onClick={() => handleRemoveMarker(marker.id)}
+                                          className="text-red-500 hover:text-red-700 text-sm font-bold"
+                                        >
+                                          ✕
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
 
                               {/* Additional metadata fields */}
                               <div className="mb-4 space-y-3">
